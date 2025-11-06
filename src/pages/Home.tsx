@@ -103,7 +103,7 @@ const Home = () => {
       </section>
 
       {/* Custom Embroidery Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 bg-brand-accent-green w-full">
+      <section className="relative py-12 sm:py-16 md:py-20 bg-[#fefaf5] w-full">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
             {/* Left Content */}
@@ -118,7 +118,7 @@ const Home = () => {
                 Transform ordinary items into extraordinary gifts with our custom embroidery services. From monogrammed towels to personalized blankets, add a special touch that shows you care. Each piece is carefully crafted to perfection.
               </p>
               <div className="pt-2">
-                <ButtonWithIcon text="Shop Embroidery" />
+                <ButtonWithIcon text="Shop Embroidery" variant="beige-bg" />
               </div>
             </div>
 
@@ -221,7 +221,7 @@ const Home = () => {
       </section>
 
       {/* Occasions Section - Full Width Banner */}
-      <section className="relative w-full bg-brand-accent-green">
+      <section className="relative w-full bg-[#fefaf5]">
         <div className="relative w-full h-[500px] sm:h-[600px] md:h-[700px] lg:h-[900px] xl:h-[1000px] overflow-hidden">
           <video 
             src="/Home%20page%20images/Towel%20Video.mp4"
@@ -241,7 +241,7 @@ const Home = () => {
                 <p>Perfect for</p>
                 <p>Every Occasion</p>
               </h2>
-              <ButtonWithIcon text="Shop by occasion" />
+              <ButtonWithIcon text="Shop by occasion" variant="beige-bg" />
             </div>
           </div>
         </div>
@@ -284,7 +284,7 @@ const Home = () => {
                     <img 
                       src={imgProductsImage} 
                       alt="Featured item" 
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
@@ -328,13 +328,13 @@ const Home = () => {
       </section>
 
       {/* Best Sellers Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 bg-brand-accent-green w-full">
+      <section className="relative py-12 sm:py-16 md:py-20 bg-[#fefaf5] w-full">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row justify-between items-start mb-8 sm:mb-10 md:mb-12 gap-4">
             <h2 className="font-playfair font-black text-brand-main-20 text-3xl sm:text-4xl md:text-5xl lg:text-[64px]">
               ~Best Sellers
             </h2>
-            <ButtonWithIcon text="View ALL" />
+            <ButtonWithIcon text="View ALL" variant="beige-bg" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
@@ -346,7 +346,7 @@ const Home = () => {
                 className="items-end"
               />
               <div className="mt-4">
-                <ButtonWithIcon text="Add to Cart" />
+                <ButtonWithIcon text="Add to Cart" variant="beige-bg" />
               </div>
             </div>
             <div className="flex flex-col">
@@ -357,7 +357,7 @@ const Home = () => {
                 className="items-start"
               />
               <div className="mt-4">
-                <ButtonWithIcon text="Add to Cart" />
+                <ButtonWithIcon text="Add to Cart" variant="beige-bg" />
               </div>
             </div>
             <div className="flex flex-col">
@@ -368,7 +368,7 @@ const Home = () => {
                 className="items-end"
               />
               <div className="mt-4">
-                <ButtonWithIcon text="Add to Cart" />
+                <ButtonWithIcon text="Add to Cart" variant="beige-bg" />
               </div>
             </div>
             <div className="flex flex-col">
@@ -379,7 +379,7 @@ const Home = () => {
                 className="items-start"
               />
               <div className="mt-4">
-                <ButtonWithIcon text="Add to Cart" />
+                <ButtonWithIcon text="Add to Cart" variant="beige-bg" />
               </div>
             </div>
           </div>
