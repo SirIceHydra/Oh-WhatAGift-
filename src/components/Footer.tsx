@@ -4,7 +4,7 @@ const logoImage = '/Oh!WhatAGiftLogo.svg'
 
 const Footer = () => {
   return (
-    <footer className="bg-[#fefaf5] relative w-full" data-name="Footer">
+    <footer className="bg-brand-accent-green relative w-full" data-name="Footer">
       <div className="container mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-8 md:py-10">
         {/* Top Section - Logo and Links */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-8">

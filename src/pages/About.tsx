@@ -21,7 +21,7 @@ const About = () => {
               thoughtfully designed gifts that speak from the heart.
             </p>
             
-            <div className="bg-[#fefaf5] rounded-xl p-6 sm:p-8 my-6 sm:my-8">
+            <div className="bg-brand-accent-green rounded-xl p-6 sm:p-8 my-6 sm:my-8">
               <h2 className="text-xl sm:text-2xl font-playfair font-black text-brand-main-20 mb-3 sm:mb-4">What Makes Us Special</h2>
               <ul className="space-y-2 sm:space-y-3 font-karla font-normal text-brand-main-30 text-sm sm:text-base">
                 <li className="flex items-start">

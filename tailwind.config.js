@@ -22,16 +22,17 @@ export default {
         // Gifting Brand Colors - Warm and inviting
         brand: {
           main: {
-            90: '#fef7f0', // Warm cream background
+            90: '#DDEEE8', // Light sage green background (from Figma)
             70: '#f5e6d3', // Soft beige footer
             50: '#d4a574', // Warm gold accent
-            30: '#8b6f47', // Rich brown secondary
-            20: '#5a4230', // Deep brown primary text
+            30: '#326755', // Medium green text (from Figma)
+            20: '#224439', // Dark green primary text (from Figma)
           },
           accent: {
             rose: '#e8b4a0', // Soft rose for highlights
             gold: '#d4a574', // Gold for CTAs
             coral: '#f4a89c', // Coral for special elements
+            green: '#DDEEE8', // Sage green for backgrounds
           },
         },
       },

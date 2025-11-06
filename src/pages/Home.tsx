@@ -11,7 +11,6 @@ const imgProductImage2 = '/Home%20page%20images/Arabic.jpeg'
 // Gift Categories section images
 const imgProductImage3 = '/Home%20page%20images/Corporate%20gifts.webp'
 const imgProductImage4 = '/Home%20page%20images/Trending_HandWovenBath_ShowerMat.webp'
-const imgProductImage5 = '/assets/67cdbd999f81a951e9becfd40577b8939ce50ac9.png'
 // Seasonal Highlights images
 const imgProductsImage = '/Home%20page%20images/WhatsApp%20Image%202025-11-04%20at%2007.52.29.jpeg'
 const imgProductsImage1 = '/Home%20page%20images/WhatsApp%20Image%202025-11-04%20at%2007.52.29%20(1).jpeg'
@@ -22,9 +21,6 @@ const imgProductImage7 = '/Home%20page%20images/71l1+QkOOcL.jpg'
 const imgProductImage8 = '/Home%20page%20images/WhatsApp%20Image%202025-11-04%20at%2007.52.30%20(1).jpeg'
 const imgProductImage9 = '/Home%20page%20images/b68ff580-e451-4a77-b08b-90b696b91881.d5c87f295caa9005b873cad20e2f9fec.webp'
 const imgProductImage10 = '/Home%20page%20images/Onion.jpeg'
-const imgIconsNext = '/assets/d8392f3bde591d9140b73e5dfb0ed230dc741f90.svg'
-const imgIconsBag = '/assets/4a54ca008001ba7c29031f6c9d13f1d903f2fd81.svg'
-const imgIconsAdd = '/assets/7234e054a384a147d71aa9a7180a42790fa1d176.svg'
 
 const Home = () => {
   // State for mobile image toggle in Custom Embroidery section
@@ -107,7 +103,7 @@ const Home = () => {
       </section>
 
       {/* Custom Embroidery Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 bg-[#fefaf5] w-full">
+      <section className="relative py-12 sm:py-16 md:py-20 bg-brand-accent-green w-full">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
             {/* Left Content */}
@@ -225,7 +221,7 @@ const Home = () => {
       </section>
 
       {/* Occasions Section - Full Width Banner */}
-      <section className="relative w-full bg-[#fefaf5]">
+      <section className="relative w-full bg-brand-accent-green">
         <div className="relative w-full h-[500px] sm:h-[600px] md:h-[700px] lg:h-[900px] xl:h-[1000px] overflow-hidden">
           <video 
             src="/Home%20page%20images/Towel%20Video.mp4"
@@ -332,7 +328,7 @@ const Home = () => {
       </section>
 
       {/* Best Sellers Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 bg-[#fefaf5] w-full">
+      <section className="relative py-12 sm:py-16 md:py-20 bg-brand-accent-green w-full">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row justify-between items-start mb-8 sm:mb-10 md:mb-12 gap-4">
             <h2 className="font-playfair font-black text-brand-main-20 text-3xl sm:text-4xl md:text-5xl lg:text-[64px]">
