@@ -119,7 +119,7 @@ const Footer = () => {
                 Cookies Policy
               </Link>
             </div>
-            <p>Made with ❤️ for thoughtful gifting</p>
+            <p>Website Design and Development by Kaizen Technology</p>
           </div>
         </div>
       </div>

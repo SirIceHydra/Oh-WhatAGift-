@@ -17,7 +17,7 @@ const imgProductsImage1 = '/Home%20page%20images/WhatsApp%20Image%202025-11-04%2
 const imgProductsImage2 = '/Home%20page%20images/WhatsApp%20Image%202025-11-04%20at%2007.52.29%20(2).jpeg'
 // Best Sellers images
 const imgProductImage6 = '/Home%20page%20images/do-everything-with-love-embroidered-kitchen-towels.jpg'
-const imgProductImage7 = '/Home%20page%20images/71l1+QkOOcL.jpg'
+const imgProductImage7 = '/Home%20page%20images/be-our-guest-towels.jpg'
 const imgProductImage8 = '/Home%20page%20images/WhatsApp%20Image%202025-11-04%20at%2007.52.30%20(1).jpeg'
 const imgProductImage9 = '/Home%20page%20images/b68ff580-e451-4a77-b08b-90b696b91881.d5c87f295caa9005b873cad20e2f9fec.webp'
 const imgProductImage10 = '/Home%20page%20images/Onion.jpeg'
