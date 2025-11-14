@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const imgIconCart = '/assets/f09c1768c33d64c5e97ca3cde78957571dd01bfa.svg'
-const logoImage = '/Oh!WhatAGiftLogo.svg'
+const logoImage = '/logos/logo_main.svg'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -14,27 +14,27 @@ const Header = () => {
         <div className="flex items-center justify-between relative">
           {/* Left Navigation */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-10 font-karla font-normal text-brand-main-20 text-sm xl:text-base">
-            <Link to="/shop" className="hover:opacity-70 transition-opacity">
-              Shop Gifts
-            </Link>
-            <Link to="/custom-embroidery" className="hover:opacity-70 transition-opacity">
-              Custom Embroidery
-            </Link>
-            <Link to="/gift-sets" className="hover:opacity-70 transition-opacity">
-              Gift Sets
+            <Link to="/" className="hover:opacity-70 transition-opacity">
+              Home
             </Link>
             <Link to="/about" className="hover:opacity-70 transition-opacity">
-              About
+              About Us
+            </Link>
+            <Link to="/shop" className="hover:opacity-70 transition-opacity">
+              Shop
+            </Link>
+            <Link to="/gallery" className="hover:opacity-70 transition-opacity">
+              Gallery
             </Link>
           </div>
 
           {/* Center Logo */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[40%]">
             <Link to="/" className="flex items-center justify-center">
               <img 
                 src={logoImage} 
                 alt="Oh! What a Gift! Logo" 
-                className="h-16 sm:h-20 md:h-24 lg:h-32 w-auto"
+                className="h-24 sm:h-32 md:h-40 lg:h-48 xl:h-56 w-auto"
               />
             </Link>
           </div>
@@ -103,32 +103,32 @@ const Header = () => {
               />
             </div>
             <Link
-              to="/shop"
+              to="/"
               className="block text-brand-main-20 hover:opacity-70 transition-opacity py-2 text-base"
               onClick={() => setIsMenuOpen(false)}
             >
-              Shop Gifts
-            </Link>
-            <Link
-              to="/custom-embroidery"
-              className="block text-brand-main-20 hover:opacity-70 transition-opacity py-2 text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Custom Embroidery
-            </Link>
-            <Link
-              to="/gift-sets"
-              className="block text-brand-main-20 hover:opacity-70 transition-opacity py-2 text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Gift Sets
+              Home
             </Link>
             <Link
               to="/about"
               className="block text-brand-main-20 hover:opacity-70 transition-opacity py-2 text-base"
               onClick={() => setIsMenuOpen(false)}
             >
-              About
+              About Us
+            </Link>
+            <Link
+              to="/shop"
+              className="block text-brand-main-20 hover:opacity-70 transition-opacity py-2 text-base"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Shop
+            </Link>
+            <Link
+              to="/gallery"
+              className="block text-brand-main-20 hover:opacity-70 transition-opacity py-2 text-base"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Gallery
             </Link>
           </div>
         )}

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const logoImage = '/Oh!WhatAGiftLogo.svg'
+const logoImage = '/logos/logo_round.svg'
 
 const Footer = () => {
   return (

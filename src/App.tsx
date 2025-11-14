@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
+import Banner from './components/Banner'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import About from './pages/About'
@@ -10,6 +11,7 @@ function App() {
     <Router>
       <div className="min-h-screen flex flex-col">
         <Header />
+        <Banner />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
