@@ -62,7 +62,19 @@ export default function Checkout({ className = '' }: CheckoutProps) {
   // Convert cart items to shipping format
   const convertCartToShippingItems = useCallback((): CartItemWithShipping[] => {
     return cart.items.map(item => ({
-      ...item,
+      id: Number(item.id) || item.productId,
+      productId: item.productId,
+      title: item.name,
+      name: item.name,
+      mainImage: item.image,
+      image: item.image,
+      price: item.price,
+      quantity: item.quantity,
+      stockStatus: item.stockStatus,
+      selectedColor: '',
+      selectedSize: '',
+      discount: 0,
+      slug: item.name.toLowerCase().replace(/\s+/g, '-'),
       weight_kg: 0.1, // Default weight for TCG products
       length_cm: 15,
       width_cm: 10,

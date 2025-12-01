@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { PostDetail } from '../components/PostDetail';
 import { usePost, useRelatedPosts } from '../hooks/usePosts';
-import { Navigation } from '../../components/Navigation';
+import HeaderSecondary from '../../components/layout/header-secondary';
 import {
   Phone,
   Mail,
@@ -10,7 +11,8 @@ import {
 } from 'lucide-react';
 
 const PostDetailPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const params = useParams();
+  const slug = params?.slug as string;
   const { post, loading, error, fetchPostBySlug } = usePost();
   const { relatedPosts, fetchRelatedPosts } = useRelatedPosts();
 
@@ -29,7 +31,7 @@ const PostDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-primary text-tertiary">
       {/* Navigation */}
-      <Navigation isScrolled={false} />
+      <HeaderSecondary />
 
       {/* Post Content */}
       <div className="pt-24">
@@ -74,22 +76,22 @@ const PostDetailPage: React.FC = () => {
               <h4 className="text-xl font-bold mb-4">QUICK LINKS</h4>
                              <ul className="space-y-2">
                  <li>
-                   <Link to="/#about" className="hover:text-tertiary transition-colors">
+                   <Link href="/#about" className="hover:text-tertiary transition-colors">
                      ABOUT US
                    </Link>
                  </li>
                  <li>
-                   <Link to="/shipping-policy" className="hover:text-tertiary transition-colors">
+                   <Link href="/shipping-policy" className="hover:text-tertiary transition-colors">
                      SHIPPING POLICY
                    </Link>
                  </li>
                  <li>
-                   <Link to="/return-policy" className="hover:text-tertiary transition-colors">
+                   <Link href="/return-policy" className="hover:text-tertiary transition-colors">
                      RETURN POLICY
                    </Link>
                  </li>
                  <li>
-                   <Link to="/privacy-policy" className="hover:text-tertiary transition-colors">
+                   <Link href="/privacy-policy" className="hover:text-tertiary transition-colors">
                      PRIVACY POLICY
                    </Link>
                  </li>

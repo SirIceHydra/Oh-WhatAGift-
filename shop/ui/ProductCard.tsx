@@ -75,12 +75,6 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
     <div
       className={`productCard group/productCard overflow-hidden rounded-xl border border-gray-200 bg-transparent transition-all duration-500 hover:-translate-y-1 w-full h-full flex flex-col ${className}`}
     >
-      {/** Compute default details href compatible with shop hash routing */}
-      {/** If parent provided onViewDetails, we'll preventDefault and call it instead */}
-      {/** Otherwise we navigate to /shop#/product/{id} which the shop page understands */}
-      {/** Keep as a plain string, no hooks */}
-      {/** @ts-ignore - using inline constant in JSX below */}
-      {(() => {})()}
       {/* IMAGE */}
       <a
         href={`/shop#/product/${product.id}`}

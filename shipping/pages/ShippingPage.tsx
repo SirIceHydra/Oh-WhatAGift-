@@ -1,36 +1,48 @@
 import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { ArrowLeft, Package, Truck } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ShippingForm } from '../ui/ShippingForm';
 import { CartItemWithShipping } from '../types/shipping';
 import { formatPrice } from '../../utils/helpers';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Header from '../../components/layout/header';
+import Footer from '../../components/layout/footer';
 
 // Mock cart data for demonstration
 const mockCartItems: CartItemWithShipping[] = [
   {
-    id: '1',
+    id: 1,
     productId: 1,
+    title: 'Pokemon Booster Pack',
     name: 'Pokemon Booster Pack',
+    mainImage: '/images/pokeproduct.png',
+    image: '/images/pokeproduct.png',
     price: 299.99,
     quantity: 2,
-    image: '/images/pokeproduct.png',
     stockStatus: 'instock',
+    selectedColor: '',
+    selectedSize: '',
+    discount: 0,
+    slug: 'pokemon-booster-pack',
     weight_kg: 0.1,
     length_cm: 15,
     width_cm: 10,
     height_cm: 2
   },
   {
-    id: '2',
+    id: 2,
     productId: 2,
+    title: 'Magic: The Gathering Booster',
     name: 'Magic: The Gathering Booster',
+    mainImage: '/images/mtgproduct.png',
+    image: '/images/mtgproduct.png',
     price: 199.99,
     quantity: 1,
-    image: '/images/mtgproduct.png',
     stockStatus: 'instock',
+    selectedColor: '',
+    selectedSize: '',
+    discount: 0,
+    slug: 'magic-the-gathering-booster',
     weight_kg: 0.1,
     length_cm: 15,
     width_cm: 10,
@@ -69,7 +81,7 @@ export default function ShippingPage() {
           </h2>
           
           <div className="flex items-center justify-between mb-8">
-            <Link to="/cart" className="flex items-center gap-2" style={{ color: 'var(--white)' }}>
+            <Link href="/cart" className="flex items-center gap-2" style={{ color: 'var(--white)' }}>
               <ArrowLeft className="w-5 h-5" /> Back to Cart
             </Link>
           </div>
@@ -158,7 +170,7 @@ export default function ShippingPage() {
                 {selectedShipping && (
                   <div className="mt-6">
                     <Link 
-                      to="/checkout" 
+                      href="/checkout" 
                       className="btn btn-primary w-full text-center"
                     >
                       Proceed to Checkout

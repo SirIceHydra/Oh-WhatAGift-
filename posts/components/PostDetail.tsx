@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowLeft, Clock, User, Tag, Calendar } from 'lucide-react';
 import { Post } from '../types/post';
 import { Loading } from '../../components/ui/Loading';
@@ -78,7 +78,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
       {/* Main Content */}
       <div className="container mx-auto px-4 pt-32 pb-20">
         <Link 
-          to="/" 
+          href="/" 
           className="inline-flex items-center gap-2 text-tertiary hover:text-primarySupport transition-colors mb-8"
         >
           <ArrowLeft size={20} />
@@ -159,7 +159,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
                 {relatedPosts.map((relatedPost) => (
                   <Link
                     key={relatedPost.id}
-                    to={`/posts/${relatedPost.slug}`}
+                    href={`/posts/${relatedPost.slug}`}
                     className="bg-primarySupport shadow-md overflow-hidden hover-lift transition-all duration-300"
                   >
                     {relatedPost.featuredImage && (

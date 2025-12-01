@@ -63,26 +63,24 @@ export interface ShippingRates {
   selectedOption: ShippingOption | null;
 }
 
-import { CartItem, Cart } from '../../types/cart';
+import { TCartItem } from '../../types/cart';
 
 // Cart item extended with shipping dimensions
-export interface CartItemWithShipping extends CartItem {
+export interface CartItemWithShipping extends TCartItem {
   weight_kg?: number;
   length_cm?: number;
   width_cm?: number;
   height_cm?: number;
-  // Ensure all CartItem properties are available
-  id: string;
+  // Additional properties for shipping
   productId: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
+  name: string; // Alias for title
+  image: string; // Alias for mainImage
   stockStatus: string;
 }
 
 // Updated cart interface with shipping
-export interface CartWithShipping extends Cart {
+export interface CartWithShipping {
+  items: CartItemWithShipping[];
   shipping: ShippingRates;
   subtotal: number;
   shippingCost: number;

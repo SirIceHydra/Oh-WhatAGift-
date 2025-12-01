@@ -42,7 +42,7 @@ async function apiRequest<T>(
   params?: any,
   config?: AxiosRequestConfig
 ): Promise<T> {
-  let lastError: Error;
+  let lastError: Error | undefined;
   
   for (let attempt = 1; attempt <= WORDPRESS_CONFIG.DEFAULTS.MAX_RETRIES; attempt++) {
     try {
@@ -175,7 +175,7 @@ export async function fetchPosts(filters: PostFilters = {}): Promise<PostsRespon
     return cached;
   }
 
-  const params = {
+  const params: Record<string, any> = {
     [WORDPRESS_PARAMS.STATUS]: WORDPRESS_CONFIG.POST_STATUS.PUBLISH,
     [WORDPRESS_PARAMS.PER_PAGE]: filters.perPage || WORDPRESS_CONFIG.DEFAULTS.POSTS_PER_PAGE,
     [WORDPRESS_PARAMS.PAGE]: filters.page || 1,

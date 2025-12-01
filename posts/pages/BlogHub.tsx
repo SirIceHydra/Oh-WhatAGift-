@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, BookOpen, Dumbbell, ChevronRight, Home, FileText, Phone, Mail, MapPin, Search, Loader2 } from 'lucide-react';
 import { fetchCategories } from '../services/wordpress-api';
 import { fetchPosts } from '../services/wordpress-api';
 import { Loading } from '../../components/ui/Loading';
-import { Navigation } from '../../components/Navigation';
+import HeaderSecondary from '../../components/layout/header-secondary';
 import { Post } from '../types/post';
 // Footer is not a named export in the site; remove import and footer usage if not present
 
@@ -38,8 +39,7 @@ const BlogHub: React.FC = () => {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [mobileOpenParentId, setMobileOpenParentId] = useState<number | null>(null);
   
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     fetchData();
@@ -47,7 +47,7 @@ const BlogHub: React.FC = () => {
 
   // Handle URL parameters for category filtering
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
+    const categoryFromUrl = searchParams?.get('category');
     if (categoryFromUrl && categories.length > 0) {
       // Find the category by slug
       const category = categories.find(cat => cat.slug === categoryFromUrl);
@@ -266,14 +266,14 @@ const BlogHub: React.FC = () => {
   return (
     <div className="min-h-screen bg-primary text-tertiary">
       {/* Navigation */}
-      <Navigation isScrolled={false} />
+      <HeaderSecondary />
       
       {/* Page Header */}
       <div className="bg-primarySupport border-b border-black/20 pt-32">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center gap-4 mb-4">
             <Link 
-              to="/" 
+              href="/" 
               className="flex items-center gap-2 text-tertiary hover:text-primarySupport transition-colors"
             >
               <Home size={20} />
@@ -496,7 +496,7 @@ const BlogHub: React.FC = () => {
                     
                     {/* Title */}
                     <h2 className="text-xl font-bold mb-3 line-clamp-2 hover:text-tertiary transition-colors">
-                      <Link to={`/posts/${post.slug}`}>
+                      <Link href={`/posts/${post.slug}`}>
                         {post.title}
                       </Link>
                     </h2>

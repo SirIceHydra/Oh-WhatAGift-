@@ -1,12 +1,12 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import { BobGoTest } from '../ui/BobGoTest';
-import { Navigation } from '../../components/Navigation';
+import HeaderSecondary from '../../components/layout/header-secondary';
 
 export default function BobGoTestPage() {
   return (
     <div className="min-h-screen bg-primary text-tertiary">
-      <Navigation isScrolled={false} />
+      <HeaderSecondary />
       <div className="h-28" />
       
       <Helmet>

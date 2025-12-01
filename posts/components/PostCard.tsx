@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Clock, ArrowRight } from 'lucide-react';
 import { Post } from '../types/post';
 
@@ -47,7 +47,7 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   return (
     <Link
-      to={`/posts/${post.slug}`}
+      href={`/posts/${post.slug}`}
       className={`bg-primarySupport text-tertiary shadow-lg overflow-hidden hover-lift transition-all duration-300 ${className}`}
     >
                 {post.featuredImage && (

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, X, ArrowLeft } from 'lucide-react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { PostGrid } from '../components/PostGrid';
 import { usePostsWithPagination } from '../hooks/usePosts';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Header from '../../components/layout/header';
+import Footer from '../../components/layout/footer';
 
 const PostsPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   
   const {
     posts,
@@ -34,7 +35,7 @@ const PostsPage: React.FC = () => {
 
   // Handle URL parameters for category filtering
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
+    const categoryFromUrl = searchParams?.get('category');
     if (categoryFromUrl && categoryFromUrl !== filters.category) {
       setCategory(categoryFromUrl);
     }
@@ -67,7 +68,7 @@ const PostsPage: React.FC = () => {
           {filters.category && (
             <div className="mb-4">
               <Link
-                to="/blog-hub"
+                href="/blog-hub"
                 className="inline-flex items-center gap-2 text-tertiary hover:text-primarySupport transition-colors font-semibold"
               >
                 <ArrowLeft size={20} />

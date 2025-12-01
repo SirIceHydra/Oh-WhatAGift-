@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/reshadamin/Documents/GitHub/Oh-WhatAGift-/app/layout\":[\"static/media/b8a3019bcd4d5455-s.p.ttf\",\"static/media/c6489d0f8513e68c-s.p.ttf\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"

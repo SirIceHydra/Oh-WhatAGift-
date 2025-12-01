@@ -24,7 +24,7 @@ export const PayFastPaymentProvider: PaymentProvider = {
 
     return {
       method: 'redirect-url',
-      url: result.redirectUrl,
+      url: result.redirectUrl || '',
       fields: {}, // WordPress handles all form data generation
     };
   },

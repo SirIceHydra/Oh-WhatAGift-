@@ -4,7 +4,7 @@ import type { Product } from '../core/ports';
 import { useCart } from '../core/cart/CartContext';
 import { formatPrice, isProductInStock, getStockStatusText } from '../../utils/helpers';
 import { Loading } from '../../components/ui/Loading';
-import AddItemPopup from '../../components/AddItemPopup';
+import AddItemPopup from '../../components/ui/AddItemPopup';
 
 interface ProductDetailsModalProps {
   product: Product | null;
