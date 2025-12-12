@@ -29,19 +29,13 @@ export function BobGoTest() {
       // Test data - sample cart items
       const testItems: CartItemWithShipping[] = [
         {
-          id: 1,
+          id: '1',
           productId: 1,
-          title: 'Whey Protein - Chocolate',
           name: 'Whey Protein - Chocolate',
-          mainImage: '',
-          image: '',
           price: 299.99,
           quantity: 2,
+          image: '',
           stockStatus: 'instock',
-          selectedColor: '',
-          selectedSize: '',
-          discount: 0,
-          slug: 'whey-protein-chocolate',
           weight_kg: 0.5,
           length_cm: 20,
           width_cm: 15,

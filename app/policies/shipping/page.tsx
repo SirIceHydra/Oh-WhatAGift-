@@ -1,9 +1,16 @@
+import Header from '@/components/layout/header';
 import HeaderSecondary from '@/components/layout/header-secondary';
 
 export default function ShippingPolicyPage() {
   return (
     <div className="w-full min-h-screen bg-brand-cream">
-      <HeaderSecondary />
+      {/* Show HeaderSecondary on mobile, Header on desktop */}
+      <div className="md:hidden">
+        <HeaderSecondary />
+      </div>
+      <div className="hidden md:block">
+        <Header />
+      </div>
       <div className="container mx-auto px-4 py-12">
         <h2 className="text-brand-gold mb-8 text-center text-[38.4px]">
           SHIPPING POLICY

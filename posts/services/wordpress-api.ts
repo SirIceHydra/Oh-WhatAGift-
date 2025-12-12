@@ -1,13 +1,8 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { WORDPRESS_CONFIG, WORDPRESS_HEADERS, WORDPRESS_PARAMS } from '../config/wordpress';
 import { WordPressPost, WordPressMedia, Post, PostsResponse, PostFilters } from '../types/post';
 
-// Create axios instance for WordPress API
-const wordpressApi: AxiosInstance = axios.create({
-  baseURL: `${WORDPRESS_CONFIG.BASE_URL}/wp-json/${WORDPRESS_CONFIG.API_VERSION}`,
-  timeout: WORDPRESS_CONFIG.DEFAULTS.TIMEOUT,
-  headers: WORDPRESS_HEADERS,
-});
+// Base URL for WordPress API
+const BASE_URL = `${WORDPRESS_CONFIG.BASE_URL}/wp-json/${WORDPRESS_CONFIG.API_VERSION}`;
 
 // Cache storage
 const cache = new Map<string, { data: any; timestamp: number }>();
@@ -36,24 +31,49 @@ export function preloadCache(): void {
   });
 }
 
+// Helper function to build query string from params
+function buildQueryString(params: Record<string, any>): string {
+  const filteredParams = Object.fromEntries(
+    Object.entries(params).filter(([_, v]) => v !== undefined && v !== null)
+  );
+  return new URLSearchParams(
+    Object.entries(filteredParams).map(([k, v]) => [k, String(v)])
+  ).toString();
+}
+
 // Helper function to make API requests with retry logic
 async function apiRequest<T>(
   endpoint: string,
-  params?: any,
-  config?: AxiosRequestConfig
+  params?: any
 ): Promise<T> {
-  let lastError: Error | undefined;
+  let lastError: Error | null = null;
   
   for (let attempt = 1; attempt <= WORDPRESS_CONFIG.DEFAULTS.MAX_RETRIES; attempt++) {
     try {
-      // Remove undefined params
-      const filteredParams = params
-        ? Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== undefined && v !== null))
-        : undefined;
-      const response = await wordpressApi.get(endpoint, { params: filteredParams, ...config });
-      return response.data;
+      const url = params
+        ? `${BASE_URL}${endpoint}?${buildQueryString(params)}`
+        : `${BASE_URL}${endpoint}`;
+
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), WORDPRESS_CONFIG.DEFAULTS.TIMEOUT);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: WORDPRESS_HEADERS,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as T;
     } catch (error) {
-      lastError = error as Error;
+      lastError = error instanceof Error ? error : new Error(String(error));
       
       if (attempt < WORDPRESS_CONFIG.DEFAULTS.MAX_RETRIES) {
         await new Promise(resolve => 
@@ -85,6 +105,15 @@ export function transformWordPressPost(wpPost: WordPressPost, media?: WordPressM
 
   // Decode HTML entities in title and content
   const decodeHtmlEntities = (text: string): string => {
+    if (typeof document === 'undefined') {
+      // Server-side: use a simple replacement
+      return text
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'");
+    }
     const textarea = document.createElement('textarea');
     textarea.innerHTML = text;
     return textarea.value;
@@ -219,11 +248,29 @@ export async function fetchPosts(filters: PostFilters = {}): Promise<PostsRespon
   }
 
   try {
-    // Use axios instance directly to access headers for totals
-    const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, v]) => v !== undefined && v !== null));
-    const response = await wordpressApi.get(WORDPRESS_CONFIG.ENDPOINTS.POSTS, { params: filteredParams });
-    const wpPosts: WordPressPost[] = response.data;
+    const url = `${BASE_URL}${WORDPRESS_CONFIG.ENDPOINTS.POSTS}?${buildQueryString(params)}`;
     
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), WORDPRESS_CONFIG.DEFAULTS.TIMEOUT);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: WORDPRESS_HEADERS,
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const wpPosts: WordPressPost[] = await response.json();
+    
+    // Get pagination headers
+    const totalHeader = response.headers.get('x-wp-total');
+    const totalPagesHeader = response.headers.get('x-wp-totalpages');
     
     // Transform posts immediately without fetching media separately
     const posts = wpPosts.map((wpPost) => {
@@ -231,8 +278,6 @@ export async function fetchPosts(filters: PostFilters = {}): Promise<PostsRespon
       return transformed;
     });
 
-    const totalHeader = response.headers['x-wp-total'] || response.headers['X-WP-Total'];
-    const totalPagesHeader = response.headers['x-wp-totalpages'] || response.headers['X-WP-TotalPages'];
     const result: PostsResponse = {
       posts,
       total: totalHeader ? parseInt(totalHeader, 10) : posts.length,

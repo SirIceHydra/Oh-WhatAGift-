@@ -12,9 +12,9 @@ import {
 
 export default function HeaderSecondary() {
   return (
-    <header className="w-full">
+    <header className="w-full relative">
       {/* Top decorative image spanning the page */}
-      <div className="w-full -mt-12">
+      <div className="w-full relative z-0 overflow-hidden">
         <Image
           src="/decorative/flowers.png"
           alt="Decorative flowers"
@@ -26,7 +26,7 @@ export default function HeaderSecondary() {
       </div>
       
       {/* Navigation bar with brand-light-green background */}
-      <div className="bg-brand-light-green w-full">
+      <div className="bg-brand-light-green w-full relative z-10">
         <div className="container mx-auto px-8 py-4">
           <div className="flex items-center justify-between w-full">
             {/* Left side - Home icon and Burger menu */}

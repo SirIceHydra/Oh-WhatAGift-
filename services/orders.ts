@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { createOrder as createOrderApi } from './woocommerce';
 
 type CartItem = {
@@ -6,18 +7,11 @@ type CartItem = {
   quantity: number;
   variationId?: number;
   variationAttributes?: Record<string, string>;
-  // Optional customization payload carried from cart
-  customization?: {
-    overlayPngDataUrl?: string;
-    config?: {
-      imagePosition?: { x: number; y: number };
-      textPosition?: { x: number; y: number };
-      text?: string;
-      textColor?: string;
-      textSize?: number;
-      instructions?: string;
-    };
-  };
+  customDesignUrl?: string;
+  customDesignMode?: 'composite' | 'overlay';
+  customUploadUrl?: string;
+  customText?: string | string[];
+  customTextColors?: string | string[];
 };
 
 export async function createOrder(
@@ -32,18 +26,21 @@ export async function createOrder(
     ...(item.variationAttributes && Object.keys(item.variationAttributes).length > 0
       ? { variation: item.variationAttributes }
       : {}),
-    ...(item.customization && (item.customization.overlayPngDataUrl || item.customization.config)
-      ? {
-          meta_data: [
-            ...(item.customization.overlayPngDataUrl
-              ? [{ key: 'customization_overlay_png', value: String(item.customization.overlayPngDataUrl) }]
-              : []),
-            ...(item.customization.config
-              ? [{ key: 'customization_config', value: JSON.stringify(item.customization.config) }]
-              : []),
-          ],
-        }
-      : {}),
+    ...(() => {
+      const meta: Array<{ key: string; value: string }> = [];
+      if (item.customDesignUrl) meta.push({ key: 'custom_design_url', value: String(item.customDesignUrl) });
+      if (item.customDesignMode) meta.push({ key: 'custom_design_mode', value: String(item.customDesignMode) });
+      if (item.customUploadUrl) meta.push({ key: 'custom_upload_url', value: String(item.customUploadUrl) });
+      if (item.customText !== undefined) {
+        const textVal = Array.isArray(item.customText) ? JSON.stringify(item.customText) : String(item.customText);
+        meta.push({ key: 'custom_text', value: textVal });
+      }
+      if (item.customTextColors !== undefined) {
+        const colorsVal = Array.isArray(item.customTextColors) ? JSON.stringify(item.customTextColors) : String(item.customTextColors);
+        meta.push({ key: 'custom_text_colors', value: colorsVal });
+      }
+      return meta.length > 0 ? { meta_data: meta } : {};
+    })(),
   }));
 
   const billing = {
@@ -92,5 +89,3 @@ export async function createOrder(
   }
   return { id: resp.orderId, order_number: resp.orderNumber };
 }
-
-

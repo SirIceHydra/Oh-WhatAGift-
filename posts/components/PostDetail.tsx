@@ -54,7 +54,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
           </svg>
         </div>
         <h3 className="text-lg font-semibold mb-2">Error Loading Post</h3>
-        <p className="text-tertiary/90">{error}</p>
+        <p className="text-brand-grey-green/90">{error}</p>
       </div>
     );
   }
@@ -68,30 +68,30 @@ export const PostDetail: React.FC<PostDetailProps> = ({
           </svg>
         </div>
         <h3 className="text-lg font-semibold mb-2">Post Not Found</h3>
-        <p className="text-tertiary/90">The post you're looking for doesn't exist.</p>
+        <p className="text-brand-grey-green/90">The post you're looking for doesn't exist.</p>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen bg-primary text-tertiary ${className}`}>
+    <div className={`min-h-screen bg-brand-cream text-brand-grey-green ${className}`}>
       {/* Main Content */}
-      <div className="container mx-auto px-4 pt-32 pb-20">
+      <div className="container mx-auto px-4 pt-8 pb-20">
         <Link 
-          href="/" 
-          className="inline-flex items-center gap-2 text-tertiary hover:text-primarySupport transition-colors mb-8"
+          href="/journal" 
+          className="inline-flex items-center gap-2 text-brand-grey-green hover:text-brand-green transition-colors mb-8"
         >
           <ArrowLeft size={20} />
-          Back to Home
+          Back to Journal
         </Link>
 
         <article className="max-w-4xl mx-auto">
           {/* Header */}
           <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{decodeHtmlEntities(post.title)}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-brand-gold">{decodeHtmlEntities(post.title)}</h1>
             
             {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-4 text-gray-500 mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-brand-grey-green/70 mb-6">
               <div className="flex items-center gap-2">
                 <Calendar size={16} />
                 <span>{formatDate(post.date)}</span>
@@ -116,7 +116,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
                 {post.categories.map((category, index) => (
                   <span
                     key={`category-${index}`}
-                    className="px-3 py-1 bg-tertiary/20 text-tertiary text-sm"
+                    className="px-3 py-1 bg-brand-light-green text-brand-grey-green text-sm rounded"
                   >
                     {category}
                   </span>
@@ -124,7 +124,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
                 {post.tags.map((tag, index) => (
                   <span
                     key={`tag-${index}`}
-                    className="px-3 py-1 bg-black/20 text-tertiary text-sm flex items-center gap-1"
+                    className="px-3 py-1 bg-brand-green/20 text-brand-grey-green text-sm flex items-center gap-1 rounded"
                   >
                     <Tag size={12} />
                     {tag}
@@ -144,23 +144,23 @@ export const PostDetail: React.FC<PostDetailProps> = ({
           )}
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none">
+          <div className="prose prose-lg max-w-none text-brand-grey-green">
             <div 
               dangerouslySetInnerHTML={{ __html: post.content }}
-              className="space-y-6"
+              className="space-y-6 [&_h1]:text-brand-gold [&_h2]:text-brand-gold [&_h3]:text-brand-gold [&_h4]:text-brand-gold [&_h5]:text-brand-gold [&_h6]:text-brand-gold [&_p]:text-brand-green [&_a]:text-brand-green [&_a:hover]:text-brand-gold"
             />
           </div>
 
           {/* Related Posts */}
           {showRelatedPosts && relatedPosts.length > 0 && (
-            <section className="mt-16 pt-8 border-t border-black/20">
-              <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
+            <section className="mt-16 pt-8 border-t border-brand-green/20">
+              <h2 className="text-2xl font-bold mb-6 text-brand-gold">Related Posts</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPosts.map((relatedPost) => (
                   <Link
                     key={relatedPost.id}
-                    href={`/posts/${relatedPost.slug}`}
-                    className="bg-primarySupport shadow-md overflow-hidden hover-lift transition-all duration-300"
+                    href={`/journal/${relatedPost.slug}`}
+                    className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 rounded-lg border-2 border-brand-green/20"
                   >
                     {relatedPost.featuredImage && (
                       <img
@@ -170,10 +170,10 @@ export const PostDetail: React.FC<PostDetailProps> = ({
                       />
                     )}
                     <div className="p-4">
-                      <h3 className="font-semibold mb-2 line-clamp-2 hover:text-tertiary transition-colors">
+                      <h3 className="font-semibold mb-2 line-clamp-2 hover:text-brand-green transition-colors text-brand-grey-green">
                         {decodeHtmlEntities(relatedPost.title)}
                       </h3>
-                      <p className="text-sm text-tertiary/80">{formatDate(relatedPost.date)}</p>
+                      <p className="text-sm text-brand-grey-green/80">{formatDate(relatedPost.date)}</p>
                     </div>
                   </Link>
                 ))}

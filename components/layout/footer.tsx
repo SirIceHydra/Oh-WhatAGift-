@@ -18,7 +18,7 @@ export default function Footer() {
           </div>
 
           {/* Navigation Columns Group */}
-          <div className="flex flex-row gap-4 pr-8">
+          <div className="flex flex-row gap-8 pr-8">
             {/* Shop Column */}
             <div>
               <h5 className="text-brand-green mb-4 uppercase text-body font-bold font-cocogothic">Shop</h5>
@@ -130,8 +130,17 @@ export default function Footer() {
             <p className="text-sm">
               © 2025 Oh! What a Gift! All rights reserved.
             </p>
-            <p className="text-body font-cocogothic text-center">
-               Designed and Developed by Kaizen Technology
+            <p className="text-body text-center">
+              Designed and Developed by{' '}
+              <Link 
+                href="https://www.kaizentech.co.za" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-brand-green hover:text-brand-grey-green transition-colors"
+                style={{ letterSpacing: '0.02em' }}
+              >
+                Kaizen Technology
+              </Link>
             </p>
           </div>
         </div>

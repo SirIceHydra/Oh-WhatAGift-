@@ -2,7 +2,9 @@ import './globals.css';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import FooterConditional from '@/components/layout/footer-conditional';
+import SocialBar from '@/components/layout/socialbar';
 import { CartProviderWrapper } from '@/components/providers/CartProviderWrapper';
+import CookieConsent from '@/components/ui/cookie-consent';
 
 const tenorSans = localFont({
   src: '../public/fonts/tenorsans/TenorSans-Regular.ttf',
@@ -14,6 +16,13 @@ const cocoGothic = localFont({
   src: '../public/fonts/cocogothic/CocoGothic_trial.ttf',
   variable: '--font-cocogothic',
   display: 'swap',
+});
+
+const hatton = localFont({
+  src: '../public/fonts/hatton/PP Hatton Medium 500.otf',
+  variable: '--font-hatton',
+  display: 'swap',
+  weight: '500',
 });
 
 export const metadata: Metadata = {
@@ -28,12 +37,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${tenorSans.variable} ${cocoGothic.variable} flex flex-col min-h-screen`}>
+      <body className={`${tenorSans.variable} ${cocoGothic.variable} ${hatton.variable} flex flex-col min-h-screen`}>
         <CartProviderWrapper>
+          <SocialBar />
           <main className="flex-1">
             {children}
           </main>
           <FooterConditional />
+          <CookieConsent />
         </CartProviderWrapper>
       </body>
     </html>

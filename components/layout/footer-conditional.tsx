@@ -2,7 +2,6 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from './footer';
-import AboutFooterImage from './about-footer-image';
 
 export default function FooterConditional() {
   const pathname = usePathname();
@@ -11,7 +10,6 @@ export default function FooterConditional() {
   return (
     <>
       <Footer />
-      <AboutFooterImage />
     </>
   );
 }

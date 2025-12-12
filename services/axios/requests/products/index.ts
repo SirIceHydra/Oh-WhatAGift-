@@ -1,6 +1,5 @@
-import { TFilterState } from "@/components/forPages/products";
 import axios from "../../configs/config";
-import { fetchLimitProductsType } from "./type";
+import { fetchLimitProductsType, TFilterState } from "./type";
 
 export const fetchAllProducts = (query: TFilterState) => {
    const category = query.category ? `&category=${query.category.toLocaleLowerCase()}` : "";

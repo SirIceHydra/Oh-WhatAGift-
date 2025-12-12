@@ -1,7 +1,7 @@
 // WordPress Posts Configuration
 export const WORDPRESS_CONFIG = {
   // WordPress Site Configuration
-  BASE_URL: process.env.REACT_APP_WORDPRESS_URL || 'https://your-wordpress-site.com',
+  BASE_URL: process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.REACT_APP_WORDPRESS_URL || 'https://your-wordpress-site.com',
   API_VERSION: 'wp/v2',
   
   // API Endpoints

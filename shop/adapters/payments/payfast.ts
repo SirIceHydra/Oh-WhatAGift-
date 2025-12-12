@@ -22,9 +22,13 @@ export const PayFastPaymentProvider: PaymentProvider = {
       throw new Error(result.error || 'Payment initialization failed');
     }
 
+    if (!result.redirectUrl) {
+      throw new Error('Payment URL not provided by server');
+    }
+
     return {
       method: 'redirect-url',
-      url: result.redirectUrl || '',
+      url: result.redirectUrl,
       fields: {}, // WordPress handles all form data generation
     };
   },

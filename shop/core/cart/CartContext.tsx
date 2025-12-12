@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+
 import { storage, calculateCartTotal, calculateCartItemCount, generateUniqueId } from '../../../utils/helpers';
 import { DEFAULTS, ERROR_MESSAGES } from '../../../utils/constants';
+
 type CartItem = {
   id: string;
   productId: number;
@@ -14,19 +16,13 @@ type CartItem = {
   variationName?: string;
   variationAttributes?: any;
   bundleSelections?: any[];
-  // Optional customizations for made-to-order items
-  customization?: {
-    overlayPngDataUrl?: string; // transparent PNG containing overlays (image+text)
-    config?: {
-      imagePosition?: { x: number; y: number };
-      textPosition?: { x: number; y: number };
-      text?: string;
-      textColor?: string;
-      textSize?: number;
-      instructions?: string;
-    };
-  };
   soldIndividually?: boolean;
+  // Optional customiser metadata
+  customDesignUrl?: string;
+  customDesignMode?: 'composite' | 'overlay';
+  customUploadUrl?: string;
+  customText?: string | string[];
+  customTextColors?: string | string[];
 };
 
 type Cart = { items: CartItem[]; total: number; itemCount: number };
@@ -43,13 +39,11 @@ type Product = {
   soldIndividually?: boolean;
 };
 
- 
-
 interface CartContextType {
   cart: Cart;
   loading: boolean;
   error: string | null;
-  addToCart: (product: Product, quantity?: number, variationId?: number, variationName?: string, bundleSelections?: any[], variationAttributes?: any, customization?: CartItem['customization']) => void;
+  addToCart: (product: Product, quantity?: number, variationId?: number, variationName?: string, bundleSelections?: any[], variationAttributes?: any, customMeta?: { designUrl?: string; mode?: 'composite' | 'overlay'; uploadUrl?: string; text?: string | string[]; textColors?: string | string[] }) => void;
   updateCartItem: (productId: number, quantity: number) => void;
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
@@ -67,24 +61,48 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [cart, setCart] = useState<Cart>(() => {
-    const savedCart = storage.get(DEFAULTS.CART_STORAGE_KEY);
-    return savedCart || { items: [], total: 0, itemCount: 0 };
-  });
+  // Initialize with empty cart to prevent hydration mismatch
+  const [cart, setCart] = useState<Cart>({ items: [], total: 0, itemCount: 0 });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [popupMessage, setPopupMessage] = useState<string>('');
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+  const lastItemCountRef = React.useRef<number>(cart.itemCount);
+  const pendingPopupRef = React.useRef<string | null>(null);
+
+  // Hydrate cart from localStorage after mount to prevent hydration mismatch
+  useEffect(() => {
+    const savedCart = storage.get(DEFAULTS.CART_STORAGE_KEY);
+    if (savedCart) {
+      setCart(savedCart);
+      lastItemCountRef.current = savedCart.itemCount || 0;
+    }
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
-    storage.set(DEFAULTS.CART_STORAGE_KEY, cart);
-    // Notify listeners outside of React context (e.g., Header Basket)
-    try {
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('cart:updated', { detail: { itemCount: cart.itemCount } }));
-      }
-    } catch {}
-  }, [cart]);
+    // Only save to localStorage after hydration to prevent mismatches
+    if (isHydrated) {
+      storage.set(DEFAULTS.CART_STORAGE_KEY, cart);
+      // Notify listeners outside of React context (e.g., Header Basket)
+      try {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('cart:updated', { detail: { itemCount: cart.itemCount } }));
+        }
+      } catch {}
+    }
+  }, [cart, isHydrated]);
+
+  // Separate effect to show popup when cart item count increases
+  useEffect(() => {
+    if (cart.itemCount > lastItemCountRef.current && pendingPopupRef.current) {
+      setPopupMessage(pendingPopupRef.current);
+      setPopupOpen(true);
+      pendingPopupRef.current = null; // Clear after showing
+    }
+    lastItemCountRef.current = cart.itemCount;
+  }, [cart.itemCount]);
 
   const showPopup = useCallback((message: string) => {
     setPopupMessage(message);
@@ -95,7 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setPopupOpen(false);
   }, []);
 
-  const addToCart = useCallback((product: Product, quantity: number = 1, variationId?: number, variationName?: string, bundleSelections?: any[], variationAttributes?: any, customization?: CartItem['customization']) => {
+  const addToCart = useCallback((product: Product, quantity: number = 1, variationId?: number, variationName?: string, bundleSelections?: any[], variationAttributes?: any, customMeta?: { designUrl?: string; mode?: 'composite' | 'overlay'; uploadUrl?: string; text?: string | string[]; textColors?: string | string[] }) => {
     setLoading(true);
     setError(null);
     
@@ -121,7 +139,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // Al Rafahia: products are made-to-order, so stock levels must NOT block adding to cart.
+      // Oh What A Gift: products are made-to-order, so stock levels must NOT block adding to cart.
       // We normalise stock to "instock" with undefined quantity to bypass stock validation checks below,
       // while still allowing stock information to be displayed elsewhere if needed.
       effectiveStockStatus = 'instock';
@@ -130,20 +148,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       // VALIDATE using LIVE product data (not stale cart data)
       // NOTE: For made-to-order products we skip hard stock blocking checks, so users can always add to cart.
       
-      // Check if item already in cart and validate new total quantity.
-      // IMPORTANT: If customization is provided, we always create a NEW cart line
-      // so that each customized item can carry its own overlay/details.
+      // Check if item already in cart and validate new total quantity
+      let shouldShowPopup = false;
       setCart(prevCart => {
-        let existingItem: CartItem | undefined;
-
-        // Only merge with an existing item if there is NO customization.
-        // This ensures multiple customized items of the same product become
-        // separate lines (and separate order items) rather than quantity bumps.
-        if (!customization) {
-          // For variations, check if the same variation is already in cart
+        // Check if this item has customization
+        const hasCustomization = !!(customMeta?.designUrl || customMeta?.uploadUrl || customMeta?.text || customMeta?.textColors);
+        
+        // For customized items, always create a new cart item (don't merge with existing)
+        // For non-customized items, check if the same variation is already in cart
+        let existingItem = null;
+        if (!hasCustomization) {
+          // Only check for existing items if this item has no customization
           existingItem = variationId 
-            ? prevCart.items.find(item => item.productId === product.id && item.variationId === variationId)
-            : prevCart.items.find(item => item.productId === product.id && !item.variationId);
+            ? prevCart.items.find(item => {
+                // Match product and variation, and ensure the existing item also has no customization
+                const existingHasCustom = !!(item.customDesignUrl || item.customUploadUrl || item.customText || item.customTextColors);
+                return item.productId === product.id && item.variationId === variationId && !existingHasCustom;
+              })
+            : prevCart.items.find(item => {
+                // Match product (no variation), and ensure the existing item also has no customization
+                const existingHasCustom = !!(item.customDesignUrl || item.customUploadUrl || item.customText || item.customTextColors);
+                return item.productId === product.id && !item.variationId && !existingHasCustom;
+              });
         }
         
         // Check sold individually restriction
@@ -162,14 +188,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
         
         // Safe to update cart now
-        if (existingItem) {
+        shouldShowPopup = true;
+        if (existingItem && !hasCustomization) {
+          // Only merge if no customization and item already exists
           const newQuantity = existingItem.quantity + quantity;
           const updatedItems = prevCart.items.map(item => 
             (variationId ? (item.productId === product.id && item.variationId === variationId) : (item.productId === product.id && !item.variationId))
-              ? { ...item, quantity: newQuantity } : item
+              ? { 
+                  ...item, 
+                  quantity: newQuantity, 
+                  ...(customMeta?.designUrl ? { customDesignUrl: customMeta.designUrl } : {}), 
+                  ...(customMeta?.mode ? { customDesignMode: customMeta.mode } : {}),
+                  ...(customMeta?.uploadUrl ? { customUploadUrl: customMeta.uploadUrl } : {}),
+                  ...(customMeta?.text !== undefined ? { customText: customMeta.text } : {}),
+                  ...(customMeta?.textColors !== undefined ? { customTextColors: customMeta.textColors } : {}),
+                } : item
           );
-          // Show popup for quantity update
-          showPopup(effectiveName);
           return { items: updatedItems, total: calculateCartTotal(updatedItems), itemCount: calculateCartItemCount(updatedItems) };
         } else {
           const newItem: CartItem = {
@@ -185,15 +219,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             variationName,
             variationAttributes,
             bundleSelections,
-            customization,
             soldIndividually: effectiveSoldIndividually,
+            ...(customMeta?.designUrl ? { customDesignUrl: customMeta.designUrl } : {}),
+            ...(customMeta?.mode ? { customDesignMode: customMeta.mode } : {}),
+            ...(customMeta?.uploadUrl ? { customUploadUrl: customMeta.uploadUrl } : {}),
+            ...(customMeta?.text !== undefined ? { customText: customMeta.text } : {}),
+            ...(customMeta?.textColors !== undefined ? { customTextColors: customMeta.textColors } : {}),
           };
           const newItems = [...prevCart.items, newItem];
-          // Show popup for new item
-          showPopup(effectiveName);
           return { items: newItems, total: calculateCartTotal(newItems), itemCount: calculateCartItemCount(newItems) };
         }
       });
+      
+      // Store the product name and show popup after cart state updates
+      if (shouldShowPopup) {
+        pendingPopupRef.current = effectiveName;
+        // Use setTimeout to ensure popup shows after React processes the state update
+        setTimeout(() => {
+          if (pendingPopupRef.current === effectiveName) {
+            setPopupMessage(effectiveName);
+            setPopupOpen(true);
+            pendingPopupRef.current = null;
+          }
+        }, 10);
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.API_ERROR;
       setError(errorMessage);
@@ -294,5 +343,3 @@ export function useCart(): CartContextType {
   if (!context) throw new Error('useCart must be used within a CartProvider');
   return context;
 }
-
-

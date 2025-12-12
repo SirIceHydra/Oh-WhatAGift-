@@ -1,9 +1,8 @@
 import { AxiosError } from "axios";
 import { useQuery } from "react-query";
 import { IProductsProps } from "@/components/common/product/type";
-import { TFilterState } from "@/components/forPages/products";
+import { TFilterState } from "@/services/axios/requests/products/type";
 import { getProducts } from "@/services/woocommerce";
-import { mockProducts } from "@/data/mockProducts";
 
 const GetAllProducts = (query: TFilterState) => {
    return useQuery<{ products: IProductsProps[]; allProductsCount: number }, AxiosError>(
@@ -60,13 +59,10 @@ const GetAllProducts = (query: TFilterState) => {
               allProductsCount: resp.total,
             };
          } catch (error: any) {
-            // Fallback to mock data if API fails
+            // Fallback to empty array if API fails
             return {
-              products: [...mockProducts].slice(
-                (query.pageNumber - 1) * query.limitPerPage,
-                (query.pageNumber - 1) * query.limitPerPage + query.limitPerPage
-              ),
-              allProductsCount: mockProducts.length,
+              products: [],
+              allProductsCount: 0,
             };
          }
       },

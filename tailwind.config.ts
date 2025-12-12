@@ -18,6 +18,7 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-tenorsans)', 'sans-serif'],
         cocogothic: ['var(--font-cocogothic)', 'sans-serif'],
+        hatton: ['var(--font-hatton)', 'serif'],
       },
       fontSize: {
         // Semantic heading sizes using TenorSans

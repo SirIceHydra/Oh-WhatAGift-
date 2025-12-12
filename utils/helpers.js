@@ -2,17 +2,39 @@
 // Signature generation is now handled securely by WordPress backend
 
 export function formatPrice(value) {
-  try {
-    return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(value || 0);
-  } catch {
-    return `R ${Number(value || 0).toFixed(2)}`;
-  }
+  // Use consistent formatting to avoid hydration mismatches between server and client
+  // Always use period as decimal separator and comma as thousands separator
+  const num = Number(value || 0);
+  const parts = num.toFixed(2).split('.');
+  const integerPart = parts[0];
+  const decimalPart = parts[1];
+  // Add thousands separators
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `R ${formattedInteger}.${decimalPart}`;
 }
 
 export const storage = {
-  get(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; } },
-  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },
-  remove(key) { try { localStorage.removeItem(key); } catch {} },
+  get(key) { 
+    try { 
+      if (typeof window === 'undefined') return null;
+      const v = localStorage.getItem(key); 
+      return v ? JSON.parse(v) : null; 
+    } catch { 
+      return null; 
+    } 
+  },
+  set(key, val) { 
+    try { 
+      if (typeof window === 'undefined') return;
+      localStorage.setItem(key, JSON.stringify(val)); 
+    } catch {} 
+  },
+  remove(key) { 
+    try { 
+      if (typeof window === 'undefined') return;
+      localStorage.removeItem(key); 
+    } catch {} 
+  },
 };
 
 /**

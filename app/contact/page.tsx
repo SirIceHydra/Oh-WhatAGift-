@@ -1,3 +1,4 @@
+import Header from '@/components/layout/header';
 import HeaderSecondary from '@/components/layout/header-secondary';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5,7 +6,13 @@ import { Input } from '@/components/ui/input';
 export default function ContactPage() {
   return (
     <div className="w-full min-h-screen bg-brand-cream">
-      <HeaderSecondary />
+      {/* Show HeaderSecondary on mobile, Header on desktop */}
+      <div className="md:hidden">
+        <HeaderSecondary />
+      </div>
+      <div className="hidden md:block">
+        <Header />
+      </div>
       
       {/* Contact Section */}
       <div className="container mx-auto px-4 py-12">

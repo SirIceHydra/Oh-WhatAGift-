@@ -29,6 +29,14 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
   const isInStock = isProductInStock(product.stockStatus, remainingStock);
   const isInCartState = isInCart(product.id);
   
+  // Check if product is in the "custom" category
+  const isCustomProduct = product.categories && product.categories.some(
+    cat => cat.toLowerCase().trim() === 'custom'
+  );
+  
+  // Determine the link destination - custom products go to /custom, others to product details
+  const productLink = isCustomProduct ? '/custom' : `/shop#/product/${product.id}`;
+  
 
   const handleAddToCart = async () => {
     setAddingToCart(true);
@@ -77,13 +85,13 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
     >
       {/* IMAGE */}
       <a
-        href={`/shop#/product/${product.id}`}
+        href={productLink}
         onClick={onViewDetails ? (e) => { e.preventDefault(); onViewDetails(product); } : undefined}
         style={{ cursor: 'pointer', background: 'transparent', display: 'block' }}
-        aria-label="View details"
+        aria-label={isCustomProduct ? "Customize product" : "View details"}
         className="block w-full"
       >
-        <div className="relative w-full aspect-square overflow-hidden rounded-2xl ring-1 ring-gray-200">
+        <div className="relative w-full aspect-[1/1.44] overflow-hidden rounded-2xl ring-1 ring-gray-200">
           {product.onSale && (
             <div className="absolute top-3 left-3 bg-black/80 text-white text-sm font-semibold px-3 py-1 rounded">
               Sale
@@ -129,11 +137,11 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
             )}
           </div>
           <a
-            href={`/shop#/product/${product.id}`}
+            href={productLink}
             onClick={onViewDetails ? (e) => { e.preventDefault(); onViewDetails(product); } : undefined}
             className="flex items-center gap-2 text-brand-light-gold text-[10px]"
           >
-            LEARN MORE
+            {isCustomProduct ? 'CUSTOMIZE' : 'LEARN MORE'}
             <ArrowRight size={10} />
           </a>
         </div>
@@ -143,6 +151,14 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
       <div className="px-3 pb-3 mt-auto">
         <button
           onClick={() => {
+            // Custom products always go to custom page
+            if (isCustomProduct) {
+              if (typeof window !== 'undefined') {
+                window.location.href = '/custom';
+              }
+              return;
+            }
+            
             const isVariable = product.type === 'variable' || (product as any).hasVariations;
             if (isVariable) {
               if (onViewDetails) {
@@ -154,7 +170,7 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
               handleAddToCart();
             }
           }}
-          disabled={!(product.type === 'variable' || (product as any).hasVariations) && addingToCart}
+          disabled={!isCustomProduct && !(product.type === 'variable' || (product as any).hasVariations) && addingToCart}
           className="w-full border border-brand-green text-brand-green py-2 text-sm transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#74966d'; // brand-green
@@ -171,9 +187,11 @@ export function ProductCard({ product, onViewDetails, className = '' }: ProductC
             e.currentTarget.style.boxShadow = 'none';
           }}
         >
-          {product.type === 'variable' || (product as any).hasVariations
-            ? 'VIEW OPTIONS'
-            : (addingToCart ? 'Adding…' : (isInCartState ? `In Cart (${cartQuantity})` : 'ADD TO CART'))}
+          {isCustomProduct
+            ? 'CUSTOMIZE'
+            : (product.type === 'variable' || (product as any).hasVariations
+              ? 'VIEW OPTIONS'
+              : (addingToCart ? 'Adding…' : (isInCartState ? `In Cart (${cartQuantity})` : 'ADD TO CART')))}
         </button>
       </div>
 

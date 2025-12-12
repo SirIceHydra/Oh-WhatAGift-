@@ -158,23 +158,23 @@ if ( ! function_exists( 'twentytwentyfive_format_binding' ) ) :
 endif;
 
 // ============================================================================
-// OH WHAT A GIFT SECURE API ENDPOINTS
+// AL RAFAHIA SECURE API ENDPOINTS
 // ============================================================================
 
-// Oh What A Gift API Secrets - CONFIGURE THESE WITH YOUR ACTUAL VALUES
-define('PAYFAST_MERCHANT_ID', '10041260');  // TODO: Replace with your Oh What A Gift PayFast Merchant ID
-define('PAYFAST_MERCHANT_KEY', 'obea3b7ropv2x');  // TODO: Replace with your Oh What A Gift PayFast Merchant Key
-define('PAYFAST_PASSPHRASE', 'Jiggas123456');  // TODO: Replace with your Oh What A Gift PayFast Passphrase
-define('BOBGO_API_KEY', 'fc8c51e5368b4e12848baf5e9dfaa045');  // TODO: Replace with your Oh What A Gift BobGo API Key
+// Al Rafahia API Secrets - CONFIGURE THESE WITH YOUR ACTUAL VALUES
+define('PAYFAST_MERCHANT_ID', '10041260');  // TODO: Replace with your Al Rafahia PayFast Merchant ID
+define('PAYFAST_MERCHANT_KEY', 'obea3b7ropv2x');  // TODO: Replace with your Al Rafahia PayFast Merchant Key
+define('PAYFAST_PASSPHRASE', 'Jiggas123456');  // TODO: Replace with your Al Rafahia PayFast Passphrase
+define('BOBGO_API_KEY', '61b63c4b09af42eaa9c779c624a70a2f');  // TODO: Replace with your Al Rafahia BobGo API Key
 
 // CORS Configuration - Only allow your React app domain
 add_action('rest_api_init', function() {
     remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
     add_filter('rest_pre_serve_request', function($value) {
-        // Define allowed origins for Oh What A Gift
+        // Define allowed origins for Al Rafahia
         $allowed_origins = array(
-            'https://www.ohwhatagift.com',
-            'https://ohwhatagift.com',
+            'https://www.al-rafahia.com',
+            'https://al-rafahia.com',
             'http://localhost:3000', // React dev server
         );
         
@@ -195,10 +195,10 @@ add_action('rest_api_init', function() {
 });
 
 // Security Functions - OPTIMIZED with environment-aware rate limiting
-function verify_ohwhatagift_request($request) {
+function verify_alrafahia_request($request) {
     // Check API key
     $api_key = $request->get_header('X-API-Key');
-    if ($api_key !== 'ohwhatagift-react-2024') {
+    if ($api_key !== 'alrafahia-react-2024') {
         return new WP_Error('unauthorized', 'Invalid API key', array('status' => 401));
     }
     
@@ -227,143 +227,87 @@ function verify_ohwhatagift_request($request) {
 // Register Secure Endpoints
 add_action('rest_api_init', function () {
     // PayFast payment endpoint
-    register_rest_route('ohwhatagift/v1', '/payments/create', array(
+    register_rest_route('alrafahia/v1', '/payments/create', array(
         'methods' => 'POST',
         'callback' => 'handle_payfast_payment',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // BobGo shipping endpoint
-    register_rest_route('ohwhatagift/v1', '/shipping/calculate', array(
+    register_rest_route('alrafahia/v1', '/shipping/calculate', array(
         'methods' => 'POST',
         'callback' => 'handle_bobgo_shipping',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // WooCommerce products endpoint (list)
-    register_rest_route('ohwhatagift/v1', '/products', array(
+    register_rest_route('alrafahia/v1', '/products', array(
         'methods' => 'GET',
         'callback' => 'get_products_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // WooCommerce single product endpoint
-    register_rest_route('ohwhatagift/v1', '/products/(?P<id>\d+)', array(
+    register_rest_route('alrafahia/v1', '/products/(?P<id>\d+)', array(
         'methods' => 'GET',
         'callback' => 'get_product_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
 
     // WooCommerce product variations endpoint
-    register_rest_route('ohwhatagift/v1', '/products/(?P<id>\\d+)/variations', array(
+    register_rest_route('alrafahia/v1', '/products/(?P<id>\\d+)/variations', array(
         'methods' => 'GET',
         'callback' => 'get_product_variations_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // WooCommerce brands endpoint
-    register_rest_route('ohwhatagift/v1', '/products/brands', array(
+    register_rest_route('alrafahia/v1', '/products/brands', array(
         'methods' => 'GET',
         'callback' => 'get_brands_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // WooCommerce categories endpoint
-    register_rest_route('ohwhatagift/v1', '/products/categories', array(
+    register_rest_route('alrafahia/v1', '/products/categories', array(
         'methods' => 'GET',
         'callback' => 'get_categories_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // WooCommerce child categories endpoint (for dropdown under a parent like 'singles')
-    register_rest_route('ohwhatagift/v1', '/products/categories/children', array(
+    register_rest_route('alrafahia/v1', '/products/categories/children', array(
         'methods' => 'GET',
         'callback' => 'get_child_categories_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // WooCommerce orders endpoints
-    register_rest_route('ohwhatagift/v1', '/orders/create', array(
+    register_rest_route('alrafahia/v1', '/orders/create', array(
         'methods' => 'POST',
         'callback' => 'create_order_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
     
     // Also register /orders for frontend compatibility
-    register_rest_route('ohwhatagift/v1', '/orders', array(
+    register_rest_route('alrafahia/v1', '/orders', array(
         'methods' => 'POST',
         'callback' => 'create_order_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-    
-    // Update order status endpoint
-    register_rest_route('ohwhatagift/v1', '/orders/(?P<id>\d+)', array(
-        'methods' => 'PUT',
-        'callback' => 'update_order_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-    
-    // Cache clearing endpoint (for debugging)
-    register_rest_route('ohwhatagift/v1', '/cache/clear', array(
-        'methods' => 'POST',
-        'callback' => 'clear_ohwhatagift_cache',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-    
-    // Debug logs endpoint (for debugging)
-    register_rest_route('ohwhatagift/v1', '/debug/logs', array(
-        'methods' => 'GET',
-        'callback' => 'get_debug_logs',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
 
-    // Product attributes (for brand fallback in frontend)
-    register_rest_route('ohwhatagift/v1', '/products/attributes', array(
-        'methods' => 'GET',
-        'callback' => 'get_product_attributes_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-
-    // Gallery media (installation gallery images from media library)
-    register_rest_route('ohwhatagift/v1', '/gallery/media', array(
-        'methods' => 'GET',
-        'callback' => 'get_gallery_media_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-
-    // Product attribute terms
-    register_rest_route('ohwhatagift/v1', '/products/attributes/(?P<id>\\d+)/terms', array(
-        'methods' => 'GET',
-        'callback' => 'get_product_attribute_terms_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-    
-    // Linked products endpoint (cross-sells and upsells)
-    register_rest_route('ohwhatagift/v1', '/products/(?P<id>\\d+)/linked', array(
-        'methods' => 'GET',
-        'callback' => 'get_linked_products_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-    
-    // ✅ NEW: Stock validation endpoint
-    register_rest_route('ohwhatagift/v1', '/validate-stock', array(
-        'methods' => 'POST',
-        'callback' => 'validate_stock_before_payment',
-        'permission_callback' => 'verify_ohwhatagift_request',
-    ));
-
-    // ✅ Custom design upload endpoint (accepts PNG/JPEG base64, returns media URL)
-    register_rest_route('ohwhatagift/v1', '/custom-designs', array(
+    // ✅ NEW: Custom design upload endpoint (accepts PNG/JPEG base64, returns media URL)
+    register_rest_route('alrafahia/v1', '/custom-designs', array(
         'methods' => 'POST',
         'callback' => 'save_custom_design_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
     ));
 
-    // ✅ Base64 image proxy for customiser (avoids CORS tainting)
-    register_rest_route('ohwhatagift/v1', '/images/base64', array(
+    // ✅ NEW: Base64 image proxy for customiser (avoids CORS tainting)
+    register_rest_route('alrafahia/v1', '/images/base64', array(
         'methods' => 'GET',
         'callback' => 'get_image_base64_secure',
-        'permission_callback' => 'verify_ohwhatagift_request',
+        'permission_callback' => 'verify_alrafahia_request',
         'args' => array(
             'url' => array(
                 'required' => true,
@@ -372,20 +316,63 @@ add_action('rest_api_init', function () {
         ),
     ));
     
-});
+    // Update order status endpoint
+    register_rest_route('alrafahia/v1', '/orders/(?P<id>\d+)', array(
+        'methods' => 'PUT',
+        'callback' => 'update_order_secure',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
+    
+    // Cache clearing endpoint (for debugging)
+    register_rest_route('alrafahia/v1', '/cache/clear', array(
+        'methods' => 'POST',
+        'callback' => 'clear_alrafahia_cache',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
+    
+    // Debug logs endpoint (for debugging)
+    register_rest_route('alrafahia/v1', '/debug/logs', array(
+        'methods' => 'GET',
+        'callback' => 'get_debug_logs',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
 
-// Cache clearing function
-function clear_ohwhatagift_cache($request) {
-    global $wpdb;
+    // Product attributes (for brand fallback in frontend)
+    register_rest_route('alrafahia/v1', '/products/attributes', array(
+        'methods' => 'GET',
+        'callback' => 'get_product_attributes_secure',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
+
+    // Gallery media (installation gallery images from media library)
+    register_rest_route('alrafahia/v1', '/gallery/media', array(
+        'methods' => 'GET',
+        'callback' => 'get_gallery_media_secure',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
+
+    // Product attribute terms
+    register_rest_route('alrafahia/v1', '/products/attributes/(?P<id>\\d+)/terms', array(
+        'methods' => 'GET',
+        'callback' => 'get_product_attribute_terms_secure',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
     
-    // Delete all ohwhatagift transients (including linked products cache)
-    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_ohwhatagift_%' OR option_name LIKE '_transient_timeout_ohwhatagift_%'");
+    // Linked products endpoint (cross-sells and upsells)
+    register_rest_route('alrafahia/v1', '/products/(?P<id>\\d+)/linked', array(
+        'methods' => 'GET',
+        'callback' => 'get_linked_products_secure',
+        'permission_callback' => 'verify_alrafahia_request',
+    ));
     
-    return array(
-        'success' => true,
-        'message' => 'Cache cleared successfully (including linked products)'
-    );
-}
+    // ✅ NEW: Stock validation endpoint
+register_rest_route('alrafahia/v1', '/validate-stock', array(
+    'methods' => 'POST',
+    'callback' => 'validate_stock_before_payment',
+    'permission_callback' => 'verify_alrafahia_request',
+));
+    
+});
 
 // ✅ Save a custom design image (base64) to the media library and return URL + attachment ID
 function save_custom_design_secure($request) {
@@ -443,7 +430,7 @@ function save_custom_design_secure($request) {
     );
 }
 
-// ✅ Convert remote image to base64 data URL (PNG/JPEG/WEBP) for safe client-side use
+// Convert remote image to base64 data URL (PNG/JPEG/WEBP) for safe client-side use
 function get_image_base64_secure($request) {
     $url = isset($_GET['url']) ? esc_url_raw($_GET['url']) : '';
     if (!$url) {
@@ -486,6 +473,19 @@ function get_image_base64_secure($request) {
     );
 }
 
+// Cache clearing function
+function clear_alrafahia_cache($request) {
+    global $wpdb;
+    
+    // Delete all alrafahia transients (including linked products cache)
+    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_alrafahia_%' OR option_name LIKE '_transient_timeout_alrafahia_%'");
+    
+    return array(
+        'success' => true,
+        'message' => 'Cache cleared successfully (including linked products)'
+    );
+}
+
 // Debug logs endpoint
 function get_debug_logs($request) {
     // Get the last 200 lines of debug log
@@ -509,7 +509,7 @@ function get_debug_logs($request) {
     $file->seek($start_line);
     while (!$file->eof()) {
         $line = $file->current();
-            if (strpos($line, 'Oh What A Gift Debug') !== false) {
+        if (strpos($line, 'Al Rafahia Debug') !== false) {
             $lines[] = trim($line);
         }
         $file->next();
@@ -562,7 +562,7 @@ function handle_payfast_payment($request) {
             }
             
             // Log the validation (not reduction)
-            error_log("Oh What A Gift Debug: Stock validated for product {$product_id}: Available: {$current_stock}, Required: {$quantity}");
+            error_log("Al Rafahia Debug: Stock validated for product {$product_id}: Available: {$current_stock}, Required: {$quantity}");
         }
         }
         
@@ -578,7 +578,7 @@ function handle_payfast_payment($request) {
         $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
         
         // Log the payment request for debugging
-        error_log("Oh What A Gift Debug: Creating PayFast payment - Order ID: {$order_data['order_id']}, Amount: {$order_data['amount']}, Customer: {$customer_name}");
+        error_log("Al Rafahia Debug: Creating PayFast payment - Order ID: {$order_data['order_id']}, Amount: {$order_data['amount']}, Customer: {$customer_name}");
         
         $payfast_data = array(
             'merchant_id' => PAYFAST_MERCHANT_ID,
@@ -599,7 +599,7 @@ function handle_payfast_payment($request) {
         $payfast_data['signature'] = $signature;
         
         // Log the PayFast data being sent (without sensitive info)
-        error_log("Oh What A Gift Debug: PayFast data prepared - Fields: " . implode(', ', array_keys($payfast_data)) . ", Signature: " . substr($signature, 0, 10) . "...");
+        error_log("Al Rafahia Debug: PayFast data prepared - Fields: " . implode(', ', array_keys($payfast_data)) . ", Signature: " . substr($signature, 0, 10) . "...");
         
         // Provide an ordered field list (exact insertion order) so the frontend
         // can render inputs verbatim without transformation or reordering
@@ -622,7 +622,7 @@ function handle_payfast_payment($request) {
         $wpdb->query('ROLLBACK');
         
         // Log the error
-        error_log("Oh What A Gift Debug: Stock validation failed - " . $e->getMessage());
+        error_log("Al Rafahia Debug: Stock validation failed - " . $e->getMessage());
         
         return array(
             'success' => false,
@@ -674,18 +674,18 @@ function get_active_brand_taxonomy() {
     foreach ($possible_taxonomies as $taxonomy) {
         if (taxonomy_exists($taxonomy)) {
             $active_taxonomy = $taxonomy;
-            error_log('Oh What A Gift Debug: Found active brand taxonomy: ' . $taxonomy);
+            error_log('Al Rafahia Debug: Found active brand taxonomy: ' . $taxonomy);
             return $active_taxonomy;
         }
     }
     
     // DEBUG: Log all registered taxonomies
     $all_taxonomies = get_taxonomies(array('object_type' => array('product')));
-    error_log('Oh What A Gift Debug: All product taxonomies: ' . print_r($all_taxonomies, true));
+    error_log('Al Rafahia Debug: All product taxonomies: ' . print_r($all_taxonomies, true));
     
     // No brand taxonomy found
     $active_taxonomy = false;
-    error_log('Oh What A Gift Debug: No brand taxonomy found!');
+    error_log('Al Rafahia Debug: No brand taxonomy found!');
     return $active_taxonomy;
 }
 
@@ -799,14 +799,14 @@ function format_product_data($product) {
     $brand = null;
     $active_taxonomy = get_active_brand_taxonomy();
     
-    error_log('Oh What A Gift Debug - Product ID ' . $product->get_id() . ': Active taxonomy = ' . ($active_taxonomy ?: 'NONE'));
+    error_log('Al Rafahia Debug - Product ID ' . $product->get_id() . ': Active taxonomy = ' . ($active_taxonomy ?: 'NONE'));
     
     if ($active_taxonomy) {
         $terms = get_the_terms($product->get_id(), $active_taxonomy);
-        error_log('Oh What A Gift Debug - Product ID ' . $product->get_id() . ': Terms = ' . print_r($terms, true));
+        error_log('Al Rafahia Debug - Product ID ' . $product->get_id() . ': Terms = ' . print_r($terms, true));
         if ($terms && !is_wp_error($terms) && !empty($terms)) {
             $brand = $terms[0]->name;
-            error_log('Oh What A Gift Debug - Product ID ' . $product->get_id() . ': Brand from taxonomy = ' . $brand);
+            error_log('Al Rafahia Debug - Product ID ' . $product->get_id() . ': Brand from taxonomy = ' . $brand);
         }
     }
     
@@ -815,11 +815,11 @@ function format_product_data($product) {
         $brand_attr = $product->get_attribute('brand') ?: $product->get_attribute('pa_brand');
         if ($brand_attr) {
             $brand = $brand_attr;
-            error_log('Oh What A Gift Debug - Product ID ' . $product->get_id() . ': Brand from attribute = ' . $brand);
+            error_log('Al Rafahia Debug - Product ID ' . $product->get_id() . ': Brand from attribute = ' . $brand);
         }
     }
     
-    error_log('Oh What A Gift Debug - Product ID ' . $product->get_id() . ': Final brand = ' . ($brand ?: 'NULL'));
+    error_log('Al Rafahia Debug - Product ID ' . $product->get_id() . ': Final brand = ' . ($brand ?: 'NULL'));
     
     return array(
         'id' => $product->get_id(),
@@ -885,7 +885,7 @@ function get_products_secure($request) {
     $params = $request->get_params();
     
     // Create cache key from params
-    $cache_key = 'ohwhatagift_products_' . md5(serialize($params));
+    $cache_key = 'alrafahia_products_' . md5(serialize($params));
     
     // Check cache first (5 minutes)
     $cached = get_transient($cache_key);
@@ -1007,7 +1007,7 @@ function get_product_secure($request) {
     $include_variations = filter_var($request->get_param('include_variations') ?? 'false', FILTER_VALIDATE_BOOLEAN);
     
     // Check cache first
-    $cache_key = 'ohwhatagift_product_' . $product_id;
+    $cache_key = 'alrafahia_product_' . $product_id;
     $cached = get_transient($cache_key);
     if ($cached !== false) {
         return $cached;
@@ -1069,7 +1069,7 @@ function get_linked_products_secure($request) {
     $product_id = intval($request->get_param('id'));
     
     // Check cache first
-    $cache_key = 'ohwhatagift_linked_products_' . $product_id;
+    $cache_key = 'alrafahia_linked_products_' . $product_id;
     $cached = get_transient($cache_key);
     if ($cached !== false) {
         return $cached;
@@ -1129,7 +1129,7 @@ function get_brands_secure($request) {
     $params = $request->get_params();
     
     // Create cache key
-    $cache_key = 'ohwhatagift_brands_' . md5(serialize($params));
+    $cache_key = 'alrafahia_brands_' . md5(serialize($params));
     
     // Check cache first (30 minutes)
     $cached = get_transient($cache_key);
@@ -1212,7 +1212,7 @@ function get_gallery_media_secure($request) {
     $category_slug = isset($params['category_slug']) && $params['category_slug'] !== '' ? sanitize_title($params['category_slug']) : 'installation-gallery';
     
     // Build cache key based on params
-    $cache_key = 'ohwhatagift_gallery_media_' . md5(json_encode(array(
+    $cache_key = 'alrafahia_gallery_media_' . md5(json_encode(array(
         'page' => $page,
         'per_page' => $per_page,
         'category_slug' => $category_slug,
@@ -1408,7 +1408,7 @@ function get_categories_secure($request) {
     $params = $request->get_params();
     
     // Create cache key
-    $cache_key = 'ohwhatagift_categories_' . md5(serialize($params));
+    $cache_key = 'alrafahia_categories_' . md5(serialize($params));
     
     // Optional: bypass cache when force_refresh=true (useful after taxonomy changes)
     $force_refresh = isset($params['force_refresh']) ? filter_var($params['force_refresh'], FILTER_VALIDATE_BOOLEAN) : false;
@@ -1505,7 +1505,7 @@ function get_child_categories_secure($request) {
     }
     
     // Cache key includes parent and params
-    $cache_key = 'ohwhatagift_child_categories_' . md5(json_encode(array(
+    $cache_key = 'alrafahia_child_categories_' . md5(json_encode(array(
         'parent_id' => $parent_id,
         'hide_empty' => isset($params['hide_empty']) ? $params['hide_empty'] : '1',
         'number' => isset($params['per_page']) ? $params['per_page'] : '100',
@@ -1570,93 +1570,57 @@ function create_order_secure($request) {
     $order = wc_create_order();
     
     // Add line items with variation support
-foreach ($order_data['line_items'] as $item) {
-    $product = wc_get_product($item['product_id']);
-    
-    // ✅ PREPARE VARIATION ARGS
-    $args = array();
-    
-    // If this is a variation, add variation-specific data
-    if (isset($item['variation_id']) && $item['variation_id']) {
-        $args['variation_id'] = intval($item['variation_id']);
+    foreach ($order_data['line_items'] as $li) {
+        $product = wc_get_product($li['product_id']);
         
-        // ✅ ADD VARIATION ATTRIBUTES TO THE 'variation' KEY
-        // WooCommerce expects variation attributes under the 'variation' key in $args
-        if (isset($item['variation']) && is_array($item['variation'])) {
-            $args['variation'] = $item['variation'];
+        // ✅ PREPARE VARIATION ARGS
+        $args = array();
+        
+        // If this is a variation, add variation-specific data
+        if (isset($li['variation_id']) && $li['variation_id']) {
+            $args['variation_id'] = $li['variation_id'];
+            
+            // ✅ ADD VARIATION ATTRIBUTES TO THE 'variation' KEY
+            // WooCommerce expects variation attributes under the 'variation' key in $args
+            if (isset($li['variation']) && is_array($li['variation'])) {
+                $args['variation'] = $li['variation'];
+            }
         }
-    }
-    
-    // ✅ ADD PRODUCT WITH VARIATION SUPPORT
-    $order_item_id = $order->add_product($product, intval($item['quantity']), $args);
+        
+        // ✅ ADD PRODUCT WITH VARIATION SUPPORT
+        $order_item_id = $order->add_product($product, $li['quantity'], $args);
 
-    // ✅ HANDLE OPTIONAL CUSTOMIZATION META (simple URL-based format)
-    if ($order_item_id && isset($item['meta_data']) && is_array($item['meta_data'])) {
-        foreach ($item['meta_data'] as $meta) {
-            if (!isset($meta['key']) || !isset($meta['value'])) { continue; }
-            $key = sanitize_key($meta['key']);
-            $value = $meta['value'];
-            
-            // Store all meta data directly - URLs are already uploaded via /custom-designs endpoint
-            if (is_scalar($value)) {
-                wc_add_order_item_meta($order_item_id, $key, wp_kses_post(strval($value)), true);
-            } else {
-                wc_add_order_item_meta($order_item_id, $key, wp_kses_post(json_encode($value)), true);
+        // ✅ OPTIONAL: Attach customiser metadata per line item (URL or base64)
+        if ($order_item_id && isset($li['meta_data']) && is_array($li['meta_data'])) {
+            $order_item = new WC_Order_Item_Product($order_item_id);
+            foreach ($li['meta_data'] as $md) {
+                if (isset($md['key']) && isset($md['value'])) {
+                    $order_item->add_meta_data(sanitize_text_field($md['key']), $md['value'], true);
+                }
             }
-            
-            // Log for debugging
-            error_log('Oh What A Gift Debug: Stored meta ' . $key . ' for order item ' . $order_item_id);
+            $order_item->save();
         }
-        
-        // Add order note if customization was added
-        $has_custom = false;
-        foreach ($item['meta_data'] as $meta) {
-            if (isset($meta['key']) && strpos($meta['key'], 'custom_') === 0) {
-                $has_custom = true;
-                break;
-            }
-        }
-        if ($has_custom) {
-            $order->add_order_note('Customization details attached for item #' . $order_item_id);
-        }
-    }
-}
-    
-    // Set billing address (with null checks to prevent PHP errors)
-    if (isset($order_data['billing']) && is_array($order_data['billing'])) {
-        $billing = $order_data['billing'];
-        if (!empty($billing['first_name'])) $order->set_billing_first_name($billing['first_name']);
-        if (!empty($billing['last_name'])) $order->set_billing_last_name($billing['last_name']);
-        if (!empty($billing['email'])) $order->set_billing_email($billing['email']);
-        if (!empty($billing['phone'])) $order->set_billing_phone($billing['phone']);
-        if (!empty($billing['address_1'])) $order->set_billing_address_1($billing['address_1']);
-        if (!empty($billing['city'])) $order->set_billing_city($billing['city']);
-        if (!empty($billing['state'])) $order->set_billing_state($billing['state']);
-        if (!empty($billing['postcode'])) $order->set_billing_postcode($billing['postcode']);
-        if (!empty($billing['country'])) $order->set_billing_country($billing['country']);
-        
-        // Debug log
-        error_log('Oh What A Gift Debug: Billing data received - ' . json_encode($billing));
-    } else {
-        error_log('Oh What A Gift Debug: No billing data in request!');
     }
     
-    // Set shipping address (with null checks to prevent PHP errors)
-    if (isset($order_data['shipping']) && is_array($order_data['shipping'])) {
-        $shipping = $order_data['shipping'];
-        if (!empty($shipping['first_name'])) $order->set_shipping_first_name($shipping['first_name']);
-        if (!empty($shipping['last_name'])) $order->set_shipping_last_name($shipping['last_name']);
-        if (!empty($shipping['address_1'])) $order->set_shipping_address_1($shipping['address_1']);
-        if (!empty($shipping['city'])) $order->set_shipping_city($shipping['city']);
-        if (!empty($shipping['state'])) $order->set_shipping_state($shipping['state']);
-        if (!empty($shipping['postcode'])) $order->set_shipping_postcode($shipping['postcode']);
-        if (!empty($shipping['country'])) $order->set_shipping_country($shipping['country']);
-        
-        // Debug log
-        error_log('Oh What A Gift Debug: Shipping data received - ' . json_encode($shipping));
-    } else {
-        error_log('Oh What A Gift Debug: No shipping data in request!');
-    }
+    // Set billing address
+    $order->set_billing_first_name($order_data['billing']['first_name']);
+    $order->set_billing_last_name($order_data['billing']['last_name']);
+    $order->set_billing_email($order_data['billing']['email']);
+    $order->set_billing_phone($order_data['billing']['phone']);
+    $order->set_billing_address_1($order_data['billing']['address_1']);
+    $order->set_billing_city($order_data['billing']['city']);
+    $order->set_billing_state($order_data['billing']['state']);
+    $order->set_billing_postcode($order_data['billing']['postcode']);
+    $order->set_billing_country($order_data['billing']['country']);
+    
+    // Set shipping address
+    $order->set_shipping_first_name($order_data['shipping']['first_name']);
+    $order->set_shipping_last_name($order_data['shipping']['last_name']);
+    $order->set_shipping_address_1($order_data['shipping']['address_1']);
+    $order->set_shipping_city($order_data['shipping']['city']);
+    $order->set_shipping_state($order_data['shipping']['state']);
+    $order->set_shipping_postcode($order_data['shipping']['postcode']);
+    $order->set_shipping_country($order_data['shipping']['country']);
     
     // ADD SHIPPING LINES - THIS WAS MISSING!
     if (isset($order_data['shipping_lines']) && !empty($order_data['shipping_lines'])) {
@@ -1831,14 +1795,14 @@ function clear_product_cache_on_stock_change($meta_id, $post_id, $meta_key, $met
     // Only clear cache for stock-related meta changes
     if ($meta_key === '_stock' || $meta_key === '_stock_status') {
         // Clear the specific product cache
-        delete_transient('ohwhatagift_product_' . $post_id);
+        delete_transient('alrafahia_product_' . $post_id);
         
         // Clear the products list cache (since stock affects product listings)
         global $wpdb;
-        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_ohwhatagift_products_%'");
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_alrafahia_products_%'");
         
         // Log the cache clearing
-        error_log("Oh What A Gift Debug: Product cache cleared for stock change on product {$post_id}");
+        error_log("Al Rafahia Debug: Product cache cleared for stock change on product {$post_id}");
     }
 }
 
@@ -1890,7 +1854,7 @@ function validate_stock_before_payment($request) {
             );
             
             // Log the validation
-            error_log("Oh What A Gift Debug: Stock validation passed for product {$product_id}: Available: {$current_stock}, Required: {$quantity}");
+            error_log("Al Rafahia Debug: Stock validation passed for product {$product_id}: Available: {$current_stock}, Required: {$quantity}");
         }
         
         // Commit the transaction (validation only)
@@ -1908,7 +1872,7 @@ function validate_stock_before_payment($request) {
         $wpdb->query('ROLLBACK');
         
         // Log the error
-        error_log("Oh What A Gift Debug: Stock validation failed - " . $e->getMessage());
+        error_log("Al Rafahia Debug: Stock validation failed - " . $e->getMessage());
         
         return array(
             'success' => false,
@@ -1927,204 +1891,25 @@ function validate_stock_before_payment($request) {
 // ADMIN DEBUG LOGS VIEWER
 // ============================================================================
 
-// ============================================================================
-// SERVER-SIDE IMAGE COMPOSITING FOR CUSTOMIZATIONS
-// ============================================================================
-
-/**
- * Creates a composite image by layering overlay on top of background
- * 
- * @param string $background_url URL of the background product image
- * @param string $overlay_url URL of the overlay PNG (transparent)
- * @param string $config_json JSON string with dimensions and positioning info
- * @param int $order_item_id Order item ID for unique filename
- * @return string|null URL of the composite image, or null on failure
- */
-function ohwhatagift_create_composite_image($background_url, $overlay_url, $config_json, $order_item_id) {
-    // Parse config if available
-    $config = $config_json ? json_decode($config_json, true) : array();
-    $canvas_width = isset($config['width']) ? intval($config['width']) : 800;
-    $canvas_height = isset($config['height']) ? intval($config['height']) : 800;
-    
-    error_log("Oh What A Gift Debug: Creating composite - Background: {$background_url}, Overlay: {$overlay_url}, Size: {$canvas_width}x{$canvas_height}");
-    
-    // Download background image
-    $bg_response = wp_remote_get($background_url, array('timeout' => 30));
-    if (is_wp_error($bg_response)) {
-        error_log("Oh What A Gift Debug: Failed to download background image: " . $bg_response->get_error_message());
-        return null;
-    }
-    $bg_data = wp_remote_retrieve_body($bg_response);
-    if (empty($bg_data)) {
-        error_log("Oh What A Gift Debug: Background image data is empty");
-        return null;
-    }
-    
-    // Download overlay image
-    $overlay_response = wp_remote_get($overlay_url, array('timeout' => 30));
-    if (is_wp_error($overlay_response)) {
-        error_log("Oh What A Gift Debug: Failed to download overlay image: " . $overlay_response->get_error_message());
-        return null;
-    }
-    $overlay_data = wp_remote_retrieve_body($overlay_response);
-    if (empty($overlay_data)) {
-        error_log("Oh What A Gift Debug: Overlay image data is empty");
-        return null;
-    }
-    
-    // Create GD images from data
-    $bg_image = @imagecreatefromstring($bg_data);
-    $overlay_image = @imagecreatefromstring($overlay_data);
-    
-    if (!$bg_image) {
-        error_log("Oh What A Gift Debug: Failed to create GD image from background");
-        return null;
-    }
-    if (!$overlay_image) {
-        error_log("Oh What A Gift Debug: Failed to create GD image from overlay");
-        imagedestroy($bg_image);
-        return null;
-    }
-    
-    // Get dimensions
-    $bg_width = imagesx($bg_image);
-    $bg_height = imagesy($bg_image);
-    $overlay_width = imagesx($overlay_image);
-    $overlay_height = imagesy($overlay_image);
-    
-    error_log("Oh What A Gift Debug: BG size: {$bg_width}x{$bg_height}, Overlay size: {$overlay_width}x{$overlay_height}");
-    
-    // Create composite canvas
-    $composite = imagecreatetruecolor($canvas_width, $canvas_height);
-    if (!$composite) {
-        error_log("Oh What A Gift Debug: Failed to create composite canvas");
-        imagedestroy($bg_image);
-        imagedestroy($overlay_image);
-        return null;
-    }
-    
-    // Enable alpha blending
-    imagealphablending($composite, true);
-    imagesavealpha($composite, true);
-    
-    // Fill with white background first
-    $white = imagecolorallocate($composite, 255, 255, 255);
-    imagefill($composite, 0, 0, $white);
-    
-    // Calculate background scaling (object-cover behavior: fill canvas, crop excess)
-    $scale_x = $canvas_width / $bg_width;
-    $scale_y = $canvas_height / $bg_height;
-    $scale = max($scale_x, $scale_y);
-    
-    $scaled_bg_width = intval($bg_width * $scale);
-    $scaled_bg_height = intval($bg_height * $scale);
-    $bg_dst_x = intval(($canvas_width - $scaled_bg_width) / 2);
-    $bg_dst_y = intval(($canvas_height - $scaled_bg_height) / 2);
-    
-    // Draw scaled background onto composite
-    imagecopyresampled(
-        $composite, $bg_image,
-        $bg_dst_x, $bg_dst_y, // destination x, y
-        0, 0, // source x, y
-        $scaled_bg_width, $scaled_bg_height, // destination width, height
-        $bg_width, $bg_height // source width, height
-    );
-    
-    // Enable alpha blending for overlay
-    imagealphablending($composite, true);
-    
-    // Draw overlay on top (scale to match canvas if needed)
-    if ($overlay_width != $canvas_width || $overlay_height != $canvas_height) {
-        // Scale overlay to match canvas
-        imagecopyresampled(
-            $composite, $overlay_image,
-            0, 0,
-            0, 0,
-            $canvas_width, $canvas_height,
-            $overlay_width, $overlay_height
-        );
-    } else {
-        // Same size, just copy
-        imagecopy($composite, $overlay_image, 0, 0, 0, 0, $overlay_width, $overlay_height);
-    }
-    
-    // Save to temp file
-    $filename = 'customization-composite-'. time() .'-'. $order_item_id .'.png';
-    $temp_file = wp_tempnam($filename);
-    
-    if (!imagepng($composite, $temp_file, 9)) {
-        error_log("Oh What A Gift Debug: Failed to save composite PNG");
-        imagedestroy($bg_image);
-        imagedestroy($overlay_image);
-        imagedestroy($composite);
-        return null;
-    }
-    
-    // Clean up GD resources
-    imagedestroy($bg_image);
-    imagedestroy($overlay_image);
-    imagedestroy($composite);
-    
-    // Read temp file and upload to WordPress
-    $composite_data = file_get_contents($temp_file);
-    @unlink($temp_file);
-    
-    if (!$composite_data) {
-        error_log("Oh What A Gift Debug: Failed to read temp composite file");
-        return null;
-    }
-    
-    // Upload to WordPress
-    $upload = wp_upload_bits($filename, null, $composite_data);
-    if ($upload['error']) {
-        error_log("Oh What A Gift Debug: Failed to upload composite: " . $upload['error']);
-        return null;
-    }
-    
-    // Create attachment
-    $filetype = wp_check_filetype($upload['file'], null);
-    $attachment = array(
-        'post_mime_type' => $filetype['type'],
-        'post_title' => sanitize_file_name($filename),
-        'post_content' => '',
-        'post_status' => 'inherit'
-    );
-    $attach_id = wp_insert_attachment($attachment, $upload['file']);
-    
-    if (is_wp_error($attach_id)) {
-        error_log("Oh What A Gift Debug: Failed to create attachment: " . $attach_id->get_error_message());
-        return null;
-    }
-    
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
-    $attach_data = wp_generate_attachment_metadata($attach_id, $upload['file']);
-    wp_update_attachment_metadata($attach_id, $attach_data);
-    
-    $composite_url = wp_get_attachment_url($attach_id);
-    error_log("Oh What A Gift Debug: Composite created successfully: {$composite_url}");
-    
-    return $composite_url;
-}
-
 // Add admin menu for viewing logs
-add_action('admin_menu', 'ohwhatagift_add_debug_menu');
+add_action('admin_menu', 'alrafahia_add_debug_menu');
 
-function ohwhatagift_add_debug_menu() {
+function alrafahia_add_debug_menu() {
     add_menu_page(
-        'Oh What A Gift Debug Logs',      // Page title
+        'Al Rafahia Debug Logs',      // Page title
         'Debug Logs',              // Menu title
         'manage_options',          // Capability
-        'ohwhatagift-debug-logs',       // Menu slug
-        'ohwhatagift_debug_logs_page',  // Callback function
+        'alrafahia-debug-logs',       // Menu slug
+        'alrafahia_debug_logs_page',  // Callback function
         'dashicons-editor-code',   // Icon
         100                        // Position
     );
 }
 
-function ohwhatagift_debug_logs_page() {
+function alrafahia_debug_logs_page() {
     ?>
     <div class="wrap">
-        <h1>🔍 Oh What A Gift Debug Logs</h1>
+        <h1>🔍 Al Rafahia Debug Logs</h1>
         
         <div style="margin: 20px 0;">
             <button class="button button-primary" onclick="refreshLogs()">
@@ -2216,9 +2001,9 @@ function ohwhatagift_debug_logs_page() {
     function refreshLogs() {
         document.getElementById('log-content').innerHTML = '<div style="color: #61afef;">⏳ Loading logs...</div>';
         
-        fetch('<?php echo rest_url('ohwhatagift/v1/debug/logs'); ?>', {
+        fetch('<?php echo rest_url('alrafahia/v1/debug/logs'); ?>', {
             headers: {
-                'X-API-Key': 'ohwhatagift-react-2024'
+                'X-API-Key': 'alrafahia-react-2024'
             }
         })
         .then(r => r.json())
@@ -2312,7 +2097,7 @@ function ohwhatagift_debug_logs_page() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `ohwhatagift-debug-logs-${new Date().toISOString().slice(0,10)}.txt`;
+        a.download = `alrafahia-debug-logs-${new Date().toISOString().slice(0,10)}.txt`;
         a.click();
         window.URL.revokeObjectURL(url);
     }
@@ -2343,52 +2128,52 @@ function ohwhatagift_debug_logs_page() {
  */
 add_action('rest_api_init', function () {
     // User Registration
-    register_rest_route('ohwhatagift/v1', '/auth/register', array(
+    register_rest_route('alrafahia/v1', '/auth/register', array(
         'methods' => 'POST',
-        'callback' => 'ohwhatagift_handle_user_registration',
+        'callback' => 'alrafahia_handle_user_registration',
         'permission_callback' => '__return_true', // Public endpoint
     ));
     
     // User Login
-    register_rest_route('ohwhatagift/v1', '/auth/login', array(
+    register_rest_route('alrafahia/v1', '/auth/login', array(
         'methods' => 'POST',
-        'callback' => 'ohwhatagift_handle_user_login',
+        'callback' => 'alrafahia_handle_user_login',
         'permission_callback' => '__return_true', // Public endpoint
     ));
     
     // Validate Token (check if user is logged in)
-    register_rest_route('ohwhatagift/v1', '/auth/validate', array(
+    register_rest_route('alrafahia/v1', '/auth/validate', array(
         'methods' => 'POST',
-        'callback' => 'ohwhatagift_validate_auth',
+        'callback' => 'alrafahia_validate_auth',
         'permission_callback' => '__return_true',
     ));
     
     // Get Current User Profile
-    register_rest_route('ohwhatagift/v1', '/user/profile', array(
+    register_rest_route('alrafahia/v1', '/user/profile', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_user_profile',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_get_user_profile',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
     
     // Update User Profile
-    register_rest_route('ohwhatagift/v1', '/user/profile', array(
+    register_rest_route('alrafahia/v1', '/user/profile', array(
         'methods' => 'PUT',
-        'callback' => 'ohwhatagift_update_user_profile',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_update_user_profile',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
     
     // Get User Orders
-    register_rest_route('ohwhatagift/v1', '/user/orders', array(
+    register_rest_route('alrafahia/v1', '/user/orders', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_user_orders',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_get_user_orders',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
     
     // Logout
-    register_rest_route('ohwhatagift/v1', '/auth/logout', array(
+    register_rest_route('alrafahia/v1', '/auth/logout', array(
         'methods' => 'POST',
-        'callback' => 'ohwhatagift_handle_user_logout',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_handle_user_logout',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
 });
 
@@ -2396,7 +2181,7 @@ add_action('rest_api_init', function () {
  * User Registration Handler
  * Uses WordPress's wp_create_user() and wp_update_user()
  */
-function ohwhatagift_handle_user_registration($request) {
+function alrafahia_handle_user_registration($request) {
     $params = $request->get_json_params();
     
     // Validate required fields
@@ -2460,13 +2245,13 @@ function ohwhatagift_handle_user_registration($request) {
     wp_set_auth_cookie($user_id, true); // Remember user
     
     // Log registration
-    error_log("Oh What A Gift Debug: New user registered - ID: {$user_id}, Email: {$email}");
+    error_log("Al Rafahia Debug: New user registered - ID: {$user_id}, Email: {$email}");
     
     // Get user data for response
     $user = get_userdata($user_id);
     
     // Create auth token (using WordPress nonces for now)
-    $token = wp_create_nonce('ohwhatagift_auth_' . $user_id);
+    $token = wp_create_nonce('alrafahia_auth_' . $user_id);
     
     return array(
         'success' => true,
@@ -2488,7 +2273,7 @@ function ohwhatagift_handle_user_registration($request) {
  * User Login Handler
  * Uses WordPress's wp_authenticate() and wp_set_auth_cookie()
  */
-function ohwhatagift_handle_user_login($request) {
+function alrafahia_handle_user_login($request) {
     $params = $request->get_json_params();
     
     // Validate required fields
@@ -2502,7 +2287,7 @@ function ohwhatagift_handle_user_login($request) {
     $user = wp_authenticate($email, $params['password']);
     
     if (is_wp_error($user)) {
-        error_log("Oh What A Gift Debug: Login failed for {$email} - " . $user->get_error_message());
+        error_log("Al Rafahia Debug: Login failed for {$email} - " . $user->get_error_message());
         return new WP_Error('login_failed', 'Invalid email or password', array('status' => 401));
     }
     
@@ -2514,10 +2299,10 @@ function ohwhatagift_handle_user_login($request) {
     update_user_meta($user->ID, 'last_login', current_time('mysql'));
     
     // Log successful login
-    error_log("Oh What A Gift Debug: User logged in - ID: {$user->ID}, Email: {$email}");
+    error_log("Al Rafahia Debug: User logged in - ID: {$user->ID}, Email: {$email}");
     
     // Create auth token
-    $token = wp_create_nonce('ohwhatagift_auth_' . $user->ID);
+    $token = wp_create_nonce('alrafahia_auth_' . $user->ID);
     
     return array(
         'success' => true,
@@ -2539,9 +2324,9 @@ function ohwhatagift_handle_user_login($request) {
  * Validate Auth (Check if user is logged in)
  * Uses the same authentication logic as other protected endpoints
  */
-function ohwhatagift_validate_auth($request) {
+function alrafahia_validate_auth($request) {
     // Use the same permission check logic
-    $is_authenticated = ohwhatagift_check_user_logged_in($request);
+    $is_authenticated = alrafahia_check_user_logged_in($request);
     
     if (!$is_authenticated) {
         return array(
@@ -2579,7 +2364,7 @@ function ohwhatagift_validate_auth($request) {
 /**
  * Get User Profile
  */
-function ohwhatagift_get_user_profile($request) {
+function alrafahia_get_user_profile($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -2639,7 +2424,7 @@ function ohwhatagift_get_user_profile($request) {
 /**
  * Update User Profile
  */
-function ohwhatagift_update_user_profile($request) {
+function alrafahia_update_user_profile($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -2721,7 +2506,7 @@ function ohwhatagift_update_user_profile($request) {
 /**
  * Get User Orders
  */
-function ohwhatagift_get_user_orders($request) {
+function alrafahia_get_user_orders($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -2761,11 +2546,11 @@ function ohwhatagift_get_user_orders($request) {
 /**
  * Logout Handler
  */
-function ohwhatagift_handle_user_logout($request) {
+function alrafahia_handle_user_logout($request) {
     $user_id = get_current_user_id();
     
     if ($user_id) {
-        error_log("Oh What A Gift Debug: User logged out - ID: {$user_id}");
+        error_log("Al Rafahia Debug: User logged out - ID: {$user_id}");
     }
     
     // Clear WordPress auth
@@ -2781,7 +2566,7 @@ function ohwhatagift_handle_user_logout($request) {
  * Permission callback: Check if user is logged in
  * Also accepts user ID from X-User-ID header if API key is valid (for cross-domain scenarios)
  */
-function ohwhatagift_check_user_logged_in($request) {
+function alrafahia_check_user_logged_in($request) {
     // First, check if user is logged in via WordPress session (cookies)
     if (is_user_logged_in()) {
         return true;
@@ -2789,7 +2574,7 @@ function ohwhatagift_check_user_logged_in($request) {
     
     // Fallback: If API key is valid and user ID is provided in header, verify that user exists
     $api_key = $request->get_header('X-API-Key');
-    if ($api_key === 'ohwhatagift-react-2024') {
+    if ($api_key === 'alrafahia-react-2024') {
         $user_id = $request->get_header('X-User-ID');
         if ($user_id && is_numeric($user_id)) {
             $user = get_user_by('ID', intval($user_id));
@@ -2807,9 +2592,9 @@ function ohwhatagift_check_user_logged_in($request) {
 /**
  * Link orders to logged-in users during checkout
  */
-add_action('woocommerce_checkout_order_processed', 'ohwhatagift_link_order_to_user', 10, 1);
+add_action('woocommerce_checkout_order_processed', 'alrafahia_link_order_to_user', 10, 1);
 
-function ohwhatagift_link_order_to_user($order_id) {
+function alrafahia_link_order_to_user($order_id) {
     $user_id = get_current_user_id();
     
     if ($user_id) {
@@ -2817,7 +2602,7 @@ function ohwhatagift_link_order_to_user($order_id) {
         if ($order && $order->get_customer_id() === 0) {
             $order->set_customer_id($user_id);
             $order->save();
-            error_log("Oh What A Gift Debug: Order {$order_id} linked to user {$user_id}");
+            error_log("Al Rafahia Debug: Order {$order_id} linked to user {$user_id}");
         }
     }
 }
@@ -2831,31 +2616,31 @@ function ohwhatagift_link_order_to_user($order_id) {
  */
 add_action('rest_api_init', function () {
     // Get user points
-    register_rest_route('ohwhatagift/v1', '/gamification/points', array(
+    register_rest_route('alrafahia/v1', '/gamification/points', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_user_points',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_get_user_points',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
     
     // Get points history
-    register_rest_route('ohwhatagift/v1', '/gamification/points/history', array(
+    register_rest_route('alrafahia/v1', '/gamification/points/history', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_points_history',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_get_points_history',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
     
     // Get user rank
-    register_rest_route('ohwhatagift/v1', '/gamification/rank', array(
+    register_rest_route('alrafahia/v1', '/gamification/rank', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_user_rank',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_get_user_rank',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
     
     // Get user achievements
-    register_rest_route('ohwhatagift/v1', '/gamification/achievements', array(
+    register_rest_route('alrafahia/v1', '/gamification/achievements', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_user_achievements',
-        'permission_callback' => 'ohwhatagift_check_user_logged_in',
+        'callback' => 'alrafahia_get_user_achievements',
+        'permission_callback' => 'alrafahia_check_user_logged_in',
     ));
 });
 
@@ -2863,7 +2648,7 @@ add_action('rest_api_init', function () {
  * Get User Points
  * Returns the current user's point balance
  */
-function ohwhatagift_get_user_points($request) {
+function alrafahia_get_user_points($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -2883,7 +2668,7 @@ function ohwhatagift_get_user_points($request) {
             $point_type_slug = null;
             
             // Try common point type slugs
-            $possible_slugs = array('ohwhatagift-points', 'points', 'point', 'ohwhatagift_points', 'ohwhatagiftpoints');
+            $possible_slugs = array('alrafahia-points', 'points', 'point', 'alrafahia_points', 'alrafahiapoints');
             
             foreach ($possible_slugs as $slug) {
                 if (isset($point_types[$slug])) {
@@ -2899,15 +2684,15 @@ function ohwhatagift_get_user_points($request) {
             
             if ($point_type_slug) {
                 $points = gamipress_get_user_points($user_id, $point_type_slug);
-                error_log("Oh What A Gift Debug: Fetched {$points} points for user {$user_id} using point type '{$point_type_slug}'");
+                error_log("Al Rafahia Debug: Fetched {$points} points for user {$user_id} using point type '{$point_type_slug}'");
             } else {
-                error_log("Oh What A Gift Debug: No point types found in GamiPress");
+                error_log("Al Rafahia Debug: No point types found in GamiPress");
             }
         } else {
-            error_log("Oh What A Gift Debug: GamiPress point types not available");
+            error_log("Al Rafahia Debug: GamiPress point types not available");
         }
     } else {
-        error_log("Oh What A Gift Debug: GamiPress function gamipress_get_user_points not available");
+        error_log("Al Rafahia Debug: GamiPress function gamipress_get_user_points not available");
     }
     
     return array(
@@ -2921,7 +2706,7 @@ function ohwhatagift_get_user_points($request) {
  * Get Points History
  * Returns the user's points transaction log
  */
-function ohwhatagift_get_points_history($request) {
+function alrafahia_get_points_history($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -2974,7 +2759,7 @@ function ohwhatagift_get_points_history($request) {
  * Get User Rank
  * Returns the current user's rank/tier
  */
-function ohwhatagift_get_user_rank($request) {
+function alrafahia_get_user_rank($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -2995,7 +2780,7 @@ function ohwhatagift_get_user_rank($request) {
         
         if (!empty($rank_types)) {
             // Try common rank type slugs
-            $possible_slugs = array('ohwhatagift-rank', 'rank', 'ranks', 'ohwhatagift_rank', 'ohwhatagiftrank');
+            $possible_slugs = array('alrafahia-rank', 'rank', 'ranks', 'alrafahia_rank', 'alrafahiarank');
             $rank_type_slug = null;
             
             foreach ($possible_slugs as $slug) {
@@ -3019,16 +2804,16 @@ function ohwhatagift_get_user_rank($request) {
                         'title' => $rank->post_title,
                         'slug' => $rank->post_name,
                     );
-                    error_log("Oh What A Gift Debug: Fetched rank '{$rank->post_title}' for user {$user_id} using rank type '{$rank_type_slug}'");
+                    error_log("Al Rafahia Debug: Fetched rank '{$rank->post_title}' for user {$user_id} using rank type '{$rank_type_slug}'");
                 } else {
-                    error_log("Oh What A Gift Debug: No rank found for user {$user_id} in rank type '{$rank_type_slug}'");
+                    error_log("Al Rafahia Debug: No rank found for user {$user_id} in rank type '{$rank_type_slug}'");
                 }
             }
         } else {
-            error_log("Oh What A Gift Debug: No rank types found in GamiPress");
+            error_log("Al Rafahia Debug: No rank types found in GamiPress");
         }
     } else {
-        error_log("Oh What A Gift Debug: GamiPress rank functions not available");
+        error_log("Al Rafahia Debug: GamiPress rank functions not available");
     }
     
     // Get current points (reuse the points function logic)
@@ -3036,7 +2821,7 @@ function ohwhatagift_get_user_rank($request) {
     if (function_exists('gamipress_get_user_points')) {
         $point_types = gamipress_get_points_types();
         if (!empty($point_types)) {
-            $possible_slugs = array('ohwhatagift-points', 'points', 'point', 'ohwhatagift_points', 'ohwhatagiftpoints');
+            $possible_slugs = array('alrafahia-points', 'points', 'point', 'alrafahia_points', 'alrafahiapoints');
             $point_type_slug = null;
             
             foreach ($possible_slugs as $slug) {
@@ -3068,7 +2853,7 @@ function ohwhatagift_get_user_rank($request) {
  * Get User Achievements
  * Returns earned and unearned achievements for the current user
  */
-function ohwhatagift_get_user_achievements($request) {
+function alrafahia_get_user_achievements($request) {
     $user_id = get_current_user_id();
     
     if (!$user_id) {
@@ -3160,12 +2945,12 @@ function ohwhatagift_get_user_achievements($request) {
                 return $b['points'] - $a['points'];
             });
             
-            error_log("Oh What A Gift Debug: Fetched {$achievements_data['total_earned']} earned and " . count($achievements_data['unearned']) . " unearned achievements for user {$user_id}");
+            error_log("Al Rafahia Debug: Fetched {$achievements_data['total_earned']} earned and " . count($achievements_data['unearned']) . " unearned achievements for user {$user_id}");
         } else {
-            error_log("Oh What A Gift Debug: No achievement types found in GamiPress");
+            error_log("Al Rafahia Debug: No achievement types found in GamiPress");
         }
     } else {
-        error_log("Oh What A Gift Debug: GamiPress achievement functions not available");
+        error_log("Al Rafahia Debug: GamiPress achievement functions not available");
     }
     
     return array(
@@ -3183,9 +2968,9 @@ function ohwhatagift_get_user_achievements($request) {
  */
 add_action('rest_api_init', function () {
     // Get leaderboard (public endpoint - anyone can view leaderboard)
-    register_rest_route('ohwhatagift/v1', '/gamification/leaderboard', array(
+    register_rest_route('alrafahia/v1', '/gamification/leaderboard', array(
         'methods' => 'GET',
-        'callback' => 'ohwhatagift_get_leaderboard',
+        'callback' => 'alrafahia_get_leaderboard',
         'permission_callback' => '__return_true', // Public endpoint
     ));
 });
@@ -3197,14 +2982,14 @@ add_action('rest_api_init', function () {
  * @param WP_REST_Request $request The request object
  * @return array|WP_Error Leaderboard data or error
  */
-function ohwhatagift_get_leaderboard($request) {
+function alrafahia_get_leaderboard($request) {
     global $wpdb;
     
     // Get query parameters
     $limit = intval($request->get_param('limit')) ?: 50; // Default to top 50
     $limit = min($limit, 100); // Cap at 100 for performance
     
-    // Get point type slug (same logic as ohwhatagift_get_user_points)
+    // Get point type slug (same logic as alrafahia_get_user_points)
     $point_type_slug = null;
     $point_types = array();
     
@@ -3213,7 +2998,7 @@ function ohwhatagift_get_leaderboard($request) {
         
         if (!empty($point_types)) {
             // Try common point type slugs
-            $possible_slugs = array('ohwhatagift-points', 'points', 'point', 'ohwhatagift_points', 'ohwhatagiftpoints');
+            $possible_slugs = array('alrafahia-points', 'points', 'point', 'alrafahia_points', 'alrafahiapoints');
             
             foreach ($possible_slugs as $slug) {
                 if (isset($point_types[$slug])) {
@@ -3295,7 +3080,7 @@ function ohwhatagift_get_leaderboard($request) {
             $rank_types = gamipress_get_rank_types();
             if (!empty($rank_types)) {
                 $rank_type_slug = null;
-                $possible_rank_slugs = array('ohwhatagift-rank', 'rank', 'ranks', 'ohwhatagift_rank', 'ohwhatagiftrank');
+                $possible_rank_slugs = array('alrafahia-rank', 'rank', 'ranks', 'alrafahia_rank', 'alrafahiarank');
                 
                 foreach ($possible_rank_slugs as $slug) {
                     if (isset($rank_types[$slug])) {
@@ -3331,7 +3116,7 @@ function ohwhatagift_get_leaderboard($request) {
     }
     
     // Log for debugging
-    error_log("Oh What A Gift Debug: Leaderboard fetched - {$point_type_slug}, " . count($leaderboard) . " users");
+    error_log("Al Rafahia Debug: Leaderboard fetched - {$point_type_slug}, " . count($leaderboard) . " users");
     
     return array(
         'success' => true,

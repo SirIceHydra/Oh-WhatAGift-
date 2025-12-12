@@ -13,7 +13,7 @@ export function useBrands() {
     try {
       // Try dedicated brands endpoint first
       try {
-        if (WooCommerceDataProvider && typeof WooCommerceDataProvider.getBrands === 'function') {
+        if (WooCommerceDataProvider.getBrands) {
           const directBrands = await WooCommerceDataProvider.getBrands();
           if (Array.isArray(directBrands) && directBrands.length > 0) {
             setBrands(directBrands);

@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Header from "../../components/layout/header";
+import HeaderSecondary from "../../components/layout/header-secondary";
 import Footer from "../../components/layout/footer";
 import { ProductGrid } from "../ui/ProductGrid";
 import { useCategories } from "../core/hooks/useCategories";
 import { useProducts } from "../core/hooks/useProducts";
 import { useBrands } from "../core/hooks/useBrands";
-import { Search, Filter, Grid, List, ShoppingCart } from "lucide-react";
+import { Search, Filter, Grid, List, ShoppingCart, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Loading } from "../../components/ui/Loading";
 import AddItemPopup from "../../components/ui/AddItemPopup";
@@ -206,8 +207,9 @@ export default function Shop() {
   );
   const { popupOpen, popupMessage, hidePopup } = useCart();
   // Filters layout state (styling pulled from products page)
+  // true = filters are closed/hidden on mobile, false = filters are open/visible
   const [isCloseFilterOnMobile, setIsCloseFilterOnMobile] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [priceRange, setPriceRange] = useState<number[]>([0, 500]);
   const [sliderBound, setSliderBound] = useState<[number, number]>([0, 500]);
@@ -456,7 +458,13 @@ export default function Shop() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      <Header />
+      {/* Show HeaderSecondary on mobile, Header on desktop */}
+      <div className="md:hidden">
+        <HeaderSecondary />
+      </div>
+      <div className="hidden md:block">
+        <Header />
+      </div>
       <main className="py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 flex flex-col gap-6">
 
@@ -506,14 +514,14 @@ export default function Shop() {
           )}
 
           {/* Mobile filter toggle + sort summary */}
-          <div className="flex items-center justify-between lg:hidden">
+          <div className="flex items-center justify-between lg:hidden mb-4">
             <button
               type="button"
               onClick={toggleFilterOnMobile}
-              className="inline-flex items-center gap-2 border px-3 py-2 text-sm"
+              className="inline-flex items-center gap-2 border border-brand-green px-4 py-2 text-sm text-brand-green hover:bg-brand-light-green transition-colors rounded"
             >
               <Filter className="w-4 h-4" />
-              Filters
+              {isCloseFilterOnMobile ? 'Show Filters' : 'Hide Filters'}
             </button>
             {visibleAfterCatBrand.length > 0 && (
               <span className="text-xs text-gray-600">
@@ -523,9 +531,19 @@ export default function Shop() {
             )}
           </div>
 
-          <div className="flex flex-row gap-8">
-            <aside className="basis-1/5 min-w-[220px]">
-              <div className="space-y-4">
+          <div className={`flex ${isCloseFilterOnMobile ? 'flex-row' : 'flex-col lg:flex-row'} gap-8`}>
+            {/* Collapsible filter section on mobile */}
+            <aside className={`${isCloseFilterOnMobile ? 'hidden lg:block basis-1/5 min-w-[220px]' : 'w-full lg:basis-1/5 lg:min-w-[220px]'}`}>
+              <div className="space-y-4 bg-brand-light-green/30 p-4 rounded-lg lg:bg-transparent lg:p-0 relative">
+                {/* Close button on mobile */}
+                <button
+                  type="button"
+                  onClick={toggleFilterOnMobile}
+                  className="lg:hidden absolute top-2 right-2 text-brand-green hover:text-brand-gold transition-colors"
+                  aria-label="Close filters"
+                >
+                  <X className="w-5 h-5" />
+                </button>
                 <div>
                   <h4 className="mb-2 text-sm font-medium text-brand-gold">Search</h4>
                   <input
@@ -618,10 +636,19 @@ export default function Shop() {
                   loading={loading}
                   error={error}
                   variant={viewMode === "list" ? "list" : "grid"}
-                  columns={4}
+                  columns={2}
                   onViewDetails={(p) => {
                     if (typeof window !== "undefined") {
-                      window.location.hash = `/product/${p.id}`;
+                      // Check if product is in the "custom" category
+                      const isCustomProduct = p.categories && p.categories.some(
+                        cat => cat.toLowerCase().trim() === 'custom'
+                      );
+                      
+                      if (isCustomProduct) {
+                        window.location.href = '/custom';
+                      } else {
+                        window.location.hash = `/product/${p.id}`;
+                      }
                     }
                   }}
                   className="gears-list"

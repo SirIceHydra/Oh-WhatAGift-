@@ -63,22 +63,22 @@ export interface ShippingRates {
   selectedOption: ShippingOption | null;
 }
 
-import { TCartItem } from '../../types/cart';
-
-// Cart item extended with shipping dimensions
-export interface CartItemWithShipping extends TCartItem {
+// Cart item with shipping dimensions
+export interface CartItemWithShipping {
+  id: string;
+  productId: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  stockStatus: string;
   weight_kg?: number;
   length_cm?: number;
   width_cm?: number;
   height_cm?: number;
-  // Additional properties for shipping
-  productId: number;
-  name: string; // Alias for title
-  image: string; // Alias for mainImage
-  stockStatus: string;
 }
 
-// Updated cart interface with shipping
+// Cart interface with shipping
 export interface CartWithShipping {
   items: CartItemWithShipping[];
   shipping: ShippingRates;

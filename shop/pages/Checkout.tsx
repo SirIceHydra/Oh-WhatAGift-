@@ -5,6 +5,7 @@ import { useCheckout } from '../core/hooks/useCheckout';
 import { useShipping } from '../../shipping/hooks/useShipping';
 import { formatPrice } from '../../utils/helpers';
 import { CartItemWithShipping } from '../../shipping/types/shipping';
+import Header from '@/components/layout/header';
 
 type CheckoutForm = {
   firstName: string;
@@ -24,6 +25,49 @@ export default function Checkout({ className = '' }: CheckoutProps) {
   const { cart } = useCart();
   const { loading: checkoutLoading, error: checkoutError, createOrder, processPayment } = useCheckout();
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Helper function to render customization details
+  const renderCustomizationDetails = (item: typeof cart.items[0]) => {
+    const hasCustomization = !!(item.customDesignUrl || item.customUploadUrl || item.customText || item.customTextColors);
+    if (!hasCustomization) return null;
+
+    const details: string[] = [];
+    
+    if (item.customText) {
+      const textArray = Array.isArray(item.customText) ? item.customText : [item.customText];
+      if (textArray.length > 0) {
+        details.push(`Text: "${textArray.join(', ')}"`);
+      }
+    }
+    
+    if (item.customTextColors) {
+      const colorsArray = Array.isArray(item.customTextColors) ? item.customTextColors : [item.customTextColors];
+      if (colorsArray.length > 0) {
+        details.push(`Text Color: ${colorsArray.join(', ')}`);
+      }
+    }
+    
+    if (item.customUploadUrl) {
+      details.push('Custom Image Added');
+    }
+    
+    if (item.customDesignUrl) {
+      details.push('Custom Design Applied');
+    }
+
+    if (details.length === 0) return null;
+
+    return (
+      <div className="text-xs mt-1 text-brand-green/80 bg-brand-light-green/30 px-2 py-1 rounded border-l-2 border-brand-green/50">
+        <span className="font-medium text-brand-green">Customization:</span>
+        <div className="mt-0.5 space-y-0.5">
+          {details.map((detail, index) => (
+            <div key={index} className="text-brand-grey-green">• {detail}</div>
+          ))}
+        </div>
+      </div>
+    );
+  };
   const { 
     shippingRates, 
     fetchShippingRates, 
@@ -62,19 +106,7 @@ export default function Checkout({ className = '' }: CheckoutProps) {
   // Convert cart items to shipping format
   const convertCartToShippingItems = useCallback((): CartItemWithShipping[] => {
     return cart.items.map(item => ({
-      id: Number(item.id) || item.productId,
-      productId: item.productId,
-      title: item.name,
-      name: item.name,
-      mainImage: item.image,
-      image: item.image,
-      price: item.price,
-      quantity: item.quantity,
-      stockStatus: item.stockStatus,
-      selectedColor: '',
-      selectedSize: '',
-      discount: 0,
-      slug: item.name.toLowerCase().replace(/\s+/g, '-'),
+      ...item,
       weight_kg: 0.1, // Default weight for TCG products
       length_cm: 15,
       width_cm: 10,
@@ -257,27 +289,29 @@ export default function Checkout({ className = '' }: CheckoutProps) {
   }
 
   return (
-    <div className={`min-h-screen bg-primary text-support ${className}`}>
-      <div className="h-20" />
-      <section className="gallery-carousel" style={{ paddingTop: '40px', paddingBottom: '30px' }}>
-        <div className="container">
-          <h2 className="text-h2-sm xl:text-h2 font-heading text-black text-center">CHECKOUT</h2>
-          <div className="flex items-center justify-between mb-8">
+    <div className={`min-h-screen bg-white text-secondary ${className}`}>
+      <Header />
+      <section className="gallery-carousel" style={{ paddingTop: '20px', paddingBottom: '60px' }}>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
+            <h2 className="text-center sm:text-left text-h2-sm xl:text-h2 font-heading text-black flex-1">
+              CHECKOUT
+            </h2>
             <button 
               onClick={() => { window.location.href = '/cart'; }}
-              className="flex items-center gap-2 text-secondary hover:text-secondary/80 transition-colors"
+              className="flex items-center gap-2 text-secondary hover:text-secondary/80 transition-colors text-sm sm:text-base"
             >
-              <ArrowLeft className="w-5 h-5" /> Back to Cart
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" /> <span>Back to Cart</span>
             </button>
           </div>
 
           {/* MAIN LAYOUT: shipping left (2/3), summary right (1/3) */}
-          <div className="flex flex-col lg:flex-row lg:items-start gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
             {/* SHIPPING INFORMATION - LEFT */}
-            <div className="w-full lg:w-2/3">
-              <div className="bg-primary border border-black/20 w-full">
+            <div className="lg:col-span-2">
+              <div className="bg-primary shadow-lg border border-black/20 overflow-hidden">
                 <div className="p-4 sm:p-6 border-b border-black/20">
-                  <h3 className="text-h6-sm xl:text-h6 font-heading text-black">SHIPPING INFORMATION</h3>
+                  <h2 className="text-h5-sm xl:text-h5 font-heading text-black">SHIPPING INFORMATION</h2>
                 </div>
                 <div className="px-6 py-8">
                   <form ref={formRef} onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -514,10 +548,10 @@ export default function Checkout({ className = '' }: CheckoutProps) {
                             <p className="mt-1 text-sm text-blue-200">
                               Please send your preferred PUDO locker information to{' '}
                               <a 
-                                href="mailto:oraclegaming.za@gmail.com" 
+                                href="mailto:hello@ohwhatagift.com" 
                                 className="font-medium text-blue-300 hover:text-blue-200 underline"
                               >
-                                oraclegaming.za@gmail.com
+                                hello@ohwhatagift.com
                               </a>
                               {' '}after placing your order.
                             </p>
@@ -593,12 +627,13 @@ export default function Checkout({ className = '' }: CheckoutProps) {
             </div>
 
             {/* ORDER SUMMARY - RIGHT */}
-            <div className="w-full lg:w-1/3">
-              <div className="bg-primary border border-black/20 lg:sticky lg:top-4 lg:max-w-md lg:ml-auto w-full">
-                <div className="p-4 sm:p-6 border-b border-black/20">
-                  <h3 className="text-h6-sm xl:text-h6 font-heading text-black">ORDER SUMMARY</h3>
-                </div>
-                <div className="p-6">
+            <div className="lg:col-span-1">
+              <div className="lg:sticky lg:top-24 space-y-4">
+                <div className="bg-primary border border-black/20 overflow-hidden">
+                  <div className="p-4 sm:p-6 border-b border-black/20">
+                    <h2 className="text-h5-sm xl:text-h5 font-heading text-black">ORDER SUMMARY</h2>
+                  </div>
+                  <div className="px-4 sm:px-6 py-4 sm:py-6">
                   <div className="space-y-4 mb-6">
                     {cart.items.map(item => (
                       <div key={item.id} className="flex items-center gap-4">
@@ -610,6 +645,7 @@ export default function Checkout({ className = '' }: CheckoutProps) {
                         <div className="flex-1">
                           <h3 className="font-medium text-black">{item.name}</h3>
                           <p className="text-sm text-black/70">Qty: {item.quantity}</p>
+                          {renderCustomizationDetails(item)}
                         </div>
                         <p className="font-medium text-black">{formatPrice(item.price * item.quantity)}</p>
                       </div>
@@ -644,8 +680,7 @@ export default function Checkout({ className = '' }: CheckoutProps) {
                     <div className="flex items-center gap-2 mb-2"><Shield className="w-5 h-5 text-green-600" /><span className="text-sm font-medium text-black">Secure Checkout</span></div>
                     <p className="text-xs text-black/70">Your payment information is encrypted and secure. We use PayFast for secure payment processing.</p>
                   </div>
-                </div>
-                <div className="mt-6 px-6 pb-6">
+                  </div>
                   {shippingRates.error && (
                     <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
                       <p className="text-red-600 text-sm">{shippingRates.error}</p>
@@ -656,6 +691,8 @@ export default function Checkout({ className = '' }: CheckoutProps) {
                       <p className="text-red-600 text-sm">{checkoutError}</p>
                     </div>
                   )}
+                </div>
+                <div className="space-y-4 mt-6">
                   <button 
                     type="button"
                     onClick={() => formRef.current?.requestSubmit()}

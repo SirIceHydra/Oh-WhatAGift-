@@ -24,6 +24,49 @@ export default function Cart({ className = '' }: CartProps) {
   const [crossSellProducts, setCrossSellProducts] = useState<Product[]>([]);
   const [loadingCrossSells, setLoadingCrossSells] = useState(false);
 
+  // Helper function to render customization details
+  const renderCustomizationDetails = (item: typeof cart.items[0]) => {
+    const hasCustomization = !!(item.customDesignUrl || item.customUploadUrl || item.customText || item.customTextColors);
+    if (!hasCustomization) return null;
+
+    const details: string[] = [];
+    
+    if (item.customText) {
+      const textArray = Array.isArray(item.customText) ? item.customText : [item.customText];
+      if (textArray.length > 0) {
+        details.push(`Text: "${textArray.join(', ')}"`);
+      }
+    }
+    
+    if (item.customTextColors) {
+      const colorsArray = Array.isArray(item.customTextColors) ? item.customTextColors : [item.customTextColors];
+      if (colorsArray.length > 0) {
+        details.push(`Text Color: ${colorsArray.join(', ')}`);
+      }
+    }
+    
+    if (item.customUploadUrl) {
+      details.push('Custom Image Added');
+    }
+    
+    if (item.customDesignUrl) {
+      details.push('Custom Design Applied');
+    }
+
+    if (details.length === 0) return null;
+
+    return (
+      <div className="text-xs sm:text-sm mb-2 text-brand-green/80 bg-brand-light-green/30 px-2 py-1.5 rounded border-l-2 border-brand-green/50">
+        <span className="font-medium text-brand-green">Customization:</span>
+        <div className="mt-1 space-y-0.5">
+          {details.map((detail, index) => (
+            <div key={index} className="text-brand-grey-green">• {detail}</div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // Calculate shipping cost based on order total
   const FREE_SHIPPING_THRESHOLD = 1000; // R1000 threshold
   const getShippingCost = () => {
@@ -96,30 +139,32 @@ export default function Cart({ className = '' }: CartProps) {
       <div className={`min-h-screen bg-white text-secondary ${className}`}>
         <Header />
         <section className="gallery-carousel" style={{ paddingTop: '60px', paddingBottom: '30px' }}>
-          <div className="container px-4 sm:px-6">
-            <h2 className="text-center text-h2-sm xl:text-h2 font-heading text-secondary mb-6 sm:mb-8">
-              YOUR CART
-            </h2>
-            <div className="bg-white border-2 border-secondary" style={{ padding: '40px 20px', textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
-              <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <CartIcon className="w-10 h-10 sm:w-12 sm:h-12 text-secondary" />
-              </div>
-              <h3
-                className="text-h3-sm xl:text-h3 font-heading text-secondary mb-3 sm:mb-4"
-              >
-                YOUR CART IS EMPTY
-              </h3>
-              <p className="text-sm sm:text-base text-secondary/70 mb-6 sm:mb-8 px-4">Start adding some amazing products to your cart!</p>
-              <div className="flex justify-center items-center">
-                <Button
-                  onClick={() => { window.location.href = '/shop'; }}
-                  variant="outline"
-                  size="lg"
-                  className="gap-3"
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center">
+              <h2 className="text-center text-h2-sm xl:text-h2 font-heading text-secondary mb-6 sm:mb-8">
+                YOUR CART
+              </h2>
+              <div className="bg-white border-2 border-secondary text-center w-full" style={{ padding: '40px 20px', maxWidth: '600px' }}>
+                <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <CartIcon className="w-10 h-10 sm:w-12 sm:h-12 text-secondary" />
+                </div>
+                <h3
+                  className="text-h3-sm xl:text-h3 font-heading text-secondary mb-3 sm:mb-4 text-center"
                 >
-                  <CartIcon className="w-5 h-5 sm:w-6 sm:h-6" /> 
-                  <span>Start Shopping</span>
-                </Button>
+                  YOUR CART IS EMPTY
+                </h3>
+                <p className="text-sm sm:text-base text-secondary/70 mb-6 sm:mb-8 px-4 text-center">Start adding some amazing products to your cart!</p>
+                <div className="flex justify-center items-center">
+                  <Button
+                    onClick={() => { window.location.href = '/shop'; }}
+                    variant="outline"
+                    size="lg"
+                    className="gap-3"
+                  >
+                    <CartIcon className="w-5 h-5 sm:w-6 sm:h-6" /> 
+                    <span>Start Shopping</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -131,8 +176,8 @@ export default function Cart({ className = '' }: CartProps) {
   return (
     <div className={`min-h-screen bg-white text-secondary ${className}`}>
       <Header />
-      <section className="gallery-carousel" style={{ paddingTop: '20px', paddingBottom: '0px' }}>
-        <div className="container px-4 sm:px-6">
+      <section className="gallery-carousel" style={{ paddingTop: '20px', paddingBottom: '60px' }}>
+        <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 gap-4">
             <h2 className="text-center sm:text-left text-h2-sm xl:text-h2 font-heading text-black flex-1">
               YOUR CART
@@ -144,7 +189,7 @@ export default function Cart({ className = '' }: CartProps) {
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" /> <span>Back</span>
             </button>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
             <div className="lg:col-span-2 overflow-hidden">
               <div className="bg-primary shadow-lg border border-black/20 overflow-hidden">
                 <div className="p-4 sm:p-6 border-b border-black/20">
@@ -191,6 +236,7 @@ export default function Cart({ className = '' }: CartProps) {
                                 ))}
                               </div>
                             )}
+                            {renderCustomizationDetails(item)}
                             <div className="flex items-center justify-between mt-3">
                               <div className="flex items-center gap-2">
                                 <button onClick={() => handleQuantityChange(item.productId, item.quantity - 1)} disabled={updatingItem === item.productId} className="w-8 h-8 flex items-center justify-center border-2 border-black/40 hover:border-black hover:bg-black/10 disabled:opacity-50 transition-all">
@@ -238,6 +284,7 @@ export default function Cart({ className = '' }: CartProps) {
                               ))}
                             </div>
                           )}
+                          {renderCustomizationDetails(item)}
                         </div>
                         <div className="flex items-center justify-center sm:justify-end gap-3">
                           <button onClick={() => handleQuantityChange(item.productId, item.quantity - 1)} disabled={updatingItem === item.productId} className="w-10 h-10 flex items-center justify-center border-2 border-black/40 hover:border-black hover:bg-black/10 disabled:opacity-50 transition-all">
@@ -374,7 +421,7 @@ export default function Cart({ className = '' }: CartProps) {
                     Continue Shopping
                   </Button>
                 </div>
-                <div className="text-center mt-6 sm:mt-8">
+                <div className="text-center mt-6 sm:mt-8 mb-8 sm:mb-12">
                   <p className="text-xs sm:text-sm text-black mb-2">Secure Checkout</p>
                   <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 text-black">
                     <div className="flex items-center gap-1 text-xs">

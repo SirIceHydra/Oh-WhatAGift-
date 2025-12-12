@@ -22,6 +22,8 @@ const ENV_API_KEY: string | undefined =
 const FALLBACK_CONFIGS: Array<{ ns: string; key: string }> = [
   // Preferred explicit env config first
   ...(ENV_NAMESPACE && ENV_API_KEY ? [{ ns: String(ENV_NAMESPACE), key: String(ENV_API_KEY) }] : []),
+  // Oh What A Gift deployment
+  { ns: 'ohwhatagift/v1', key: 'ohwhatagift-react-2024' },
   // Common deployments
   { ns: 'alrafahia/v1', key: 'alrafahia-react-2025' },
 ];
@@ -145,11 +147,26 @@ function mapProduct(p: any): Product {
     );
   }
 
+  // Map product attributes (not variation attributes)
+  const mappedAttributes = Array.isArray(p?.attributes)
+    ? p.attributes.map((attr: any) => ({
+        id: Number(attr?.id ?? 0),
+        name: String(attr?.name || ''),
+        position: Number(attr?.position ?? 0),
+        visible: Boolean(attr?.visible ?? false),
+        variation: Boolean(attr?.variation ?? false),
+        options: Array.isArray(attr?.options) ? attr.options.map((opt: any) => String(opt)) : [],
+      }))
+    : [];
+
   const extra: Record<string, any> = {};
   if (mappedVariations) extra.variations = mappedVariations;
   if (mappedVariationAttributes) extra.variationAttributes = mappedVariationAttributes;
   if (p?.default_attributes || p?.defaultAttributes) {
     extra.defaultAttributes = p?.default_attributes ?? p?.defaultAttributes;
+  }
+  if (mappedAttributes.length > 0) {
+    extra.attributes = mappedAttributes;
   }
 
   return {
@@ -260,6 +277,21 @@ export async function createOrder(payload: any): Promise<{ success: boolean; ord
     orderNumber: resp?.order_number,
     error: resp?.error,
   };
+}
+
+// Upload a custom design image (base64) to WordPress; returns media URL
+export async function uploadCustomDesign(imageBase64: string, productId: number): Promise<{ url?: string; id?: number }> {
+  const resp = await http<any>('POST', '/custom-designs', undefined, {
+    productId: Number(productId),
+    imageBase64: String(imageBase64),
+  });
+  return { url: resp?.url, id: resp?.id };
+}
+
+// Fetch remote image as base64 through WordPress proxy to avoid CORS
+export async function getImageAsBase64(url: string): Promise<string> {
+  const resp = await http<any>('GET', '/images/base64', { url });
+  return String(resp?.data_url || '');
 }
 
 // Attribute helpers (for brand fallback)

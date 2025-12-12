@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: {
-    unoptimized: false, // Vercel can optimize images
-  },
+  images: { unoptimized: true },
 };
 
 module.exports = nextConfig;
